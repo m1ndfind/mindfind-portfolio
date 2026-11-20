@@ -35,10 +35,10 @@ svg { width:1.2em; height:1.2em; fill:none; stroke:currentColor; stroke-width:1.
 .hero-copy a { pointer-events:auto }
 .display { font-weight:950; text-transform:uppercase; letter-spacing:-.042em; word-spacing:.04em; line-height:.98 }
 .hero h1 { font-size:min(10.6cqi,105px); }
-:is(.hero h1,.type-front) > span { display:block; overflow:visible; padding:.045em .1em .09em 0; margin-bottom:-.045em; width:max-content }
-:is(.hero h1,.type-front) b { display:block; font-weight:inherit; animation:type-in .85s var(--ease) both }
-:is(.hero h1,.type-front) > span:nth-child(2) b { animation-delay:.08s }
-:is(.hero h1,.type-front) > span:nth-child(3) b { animation-delay:.16s }
+.hero h1 > span { display:block; overflow:visible; padding:.045em .1em .09em 0; margin-bottom:-.045em; width:max-content }
+.hero h1 b { display:block; font-weight:inherit; animation:type-in .85s var(--ease) both }
+.hero h1 > span:nth-child(2) b { animation-delay:.08s }
+.hero h1 > span:nth-child(3) b { animation-delay:.16s }
 @keyframes type-in { from { opacity:0; transform:translateY(.24em) } }
 .red { color:var(--red) }
 .dark .red { color:var(--hot) }
@@ -282,7 +282,7 @@ body:has(dialog[open]) { overflow:hidden }
 .hero-layout::after { z-index:3; background:linear-gradient(105deg,#211317ee,#4a1d1788 60%,#27131118); opacity:var(--leave) }
 .hero-copy { grid-area:1/1; width:100%; padding:clamp(20px,2.5vw,44px); padding-right:0; z-index:2; transform:translateY(calc(var(--leave)*-35px)) scale(calc(1 - var(--leave)*.09)); opacity:calc(1 - var(--leave)); filter:blur(calc(var(--leave)*2px)) }
 .hero h1 { font-size:min(10.25cqi,118px) }
-:is(.hero h1,.type-front) > span { overflow:hidden; padding-top:.1em; margin-top:-.06em; }
+.hero h1 > span { overflow:hidden; padding-top:.1em; margin-top:-.06em; }
 @keyframes type-in { from { transform:translateY(105%) } }
 .hero-copy p { max-width:42ch; margin-top:20px; font-size:var(--body-size) }
 .hero-art.stage { position:absolute; inset:0 0 0 43%; overflow:visible; border:0; border-radius:0; background:none; pointer-events:none }
@@ -353,13 +353,11 @@ body:has(dialog[open]) { overflow:hidden }
   .actions .cta svg { display:none }
   .cine-foot { letter-spacing:-.06em; text-transform:none }
 }
-.type-front { display:none }
 @media(min-width:761px) {
-  .hero-copy { z-index:0 }
+  .hero-copy { z-index:2 }
   .hero-art.stage { z-index:1 }
-  .type-front { display:block; position:absolute; z-index:2; pointer-events:none; clip-path:polygon(0 0,100% 0,100% 62%,81% 100%,0 100%); opacity:calc(1 - var(--leave)); }
-  .hero:has(.type-front) .hero-copy { transform:none; filter:none }
-  .type-front,.hero h1 { translate:0 calc(-18px * var(--leave)) }
+  .hero-copy { transform:none; filter:none }
+  .hero h1 { translate:0 calc(-18px * var(--leave)) }
 }
 :root { scroll-padding-top:calc(var(--headroom,88px) + 10px) }
 .intro:not(.cinematic) .manifesto { border-radius:var(--radius-card); margin-top:12px }
@@ -559,12 +557,12 @@ dialog::backdrop { background:rgba(4,5,5,.82); backdrop-filter:blur(6px); }
 @media(min-width:761px) and (prefers-reduced-motion:no-preference) {
   .hero-art .sculpture { transform:translate(calc(var(--fly)*-23%),calc(var(--fly)*2%)) scale(calc(1 + var(--fly)*.22)); }
   .hero-character { transform:translateX(calc(var(--fly)*43%)); }
-  .type-front,.hero h1 { translate:0 calc(-65px * var(--leave)); }
+  .hero h1 { translate:0 calc(-65px * var(--leave)); }
 }
 @media(prefers-reduced-motion:no-preference) {
-  :is(.hero h1,.type-front) b { animation-duration:1.17s; animation-timing-function:var(--motion-ease); }
-  :is(.hero h1,.type-front)>span:nth-child(2) b { animation-delay:.13s; }
-  :is(.hero h1,.type-front)>span:nth-child(3) b { animation-delay:.26s; }
+  .hero h1 b { animation-duration:1.17s; animation-timing-function:var(--motion-ease); }
+  .hero h1>span:nth-child(2) b { animation-delay:.13s; }
+  .hero h1>span:nth-child(3) b { animation-delay:.26s; }
   @keyframes type-in { from { opacity:0; transform:translateY(.9em); } to { opacity:1;transform:none; } }
 }
 @media(hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference) {

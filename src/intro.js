@@ -5,12 +5,6 @@ export function setupIntro() {
   const copy = stage.querySelector('.hero-copy');
   const title = copy.querySelector('h1');
   const layout = stage.querySelector('.hero-layout');
-  const front = document.createElement('div');
-  front.className = 'type-front display';
-  front.setAttribute('aria-hidden', 'true');
-  front.inert = true;
-  for (const line of title.children) front.append(line.cloneNode(true));
-  layout.append(front);
   const staticMode = matchMedia('(prefers-reduced-motion: reduce), (max-height:530px)');
   const manifesto = track.querySelector('.manifesto');
   let frame = 0, visible = true, playhead, lastTime = 0;
@@ -53,12 +47,6 @@ export function setupIntro() {
   new IntersectionObserver(([entry])=>{visible=entry.isIntersecting;if (!visible) {playhead=undefined;lastTime=0;} schedule();},{rootMargin:'120px'}).observe(track);
   const header = document.querySelector('.site-head');
   const resize = new ResizeObserver(() => {
-    // Both ink planes use exactly the same line boxes. A diagonal mask lets
-    // the near bend of the ribbon cover only the foot of the final line.
-    front.style.left = copy.offsetLeft + title.offsetLeft + 'px';
-    front.style.top = copy.offsetTop + title.offsetTop + 'px';
-    front.style.fontSize = getComputedStyle(title).fontSize;
-    front.style.width = title.offsetWidth + 'px';
     document.documentElement.style.setProperty('--headroom', header.offsetHeight + 'px');
     schedule();
   });
