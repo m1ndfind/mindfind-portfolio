@@ -291,7 +291,6 @@ body:has(dialog[open]) { overflow:hidden }
 .orbit { position:absolute; inset:7% -18% 10% -8%; border:1px solid #ffe1da70; border-radius:50%; transform:rotate(-26deg) translateX(calc(var(--fly)*-6%)); pointer-events:none }
 .hero-art .sculpture { inset:-8% -7% 1% -24%; transform:translate(calc(var(--fly)*-14%),calc(var(--fly)*3%)) }
 .hero-character { width:min(55%,420px); right:1%; bottom:0; opacity:calc(1 - var(--leave)); transform:translateX(calc(var(--fly)*25%)); animation:none }
-.near-ribbon { position:absolute; pointer-events:none; z-index:2; width:19%; aspect-ratio:1; left:48%; top:29%; background:url(assets/hero-chrome.webp) center/contain no-repeat; clip-path:polygon(38% 52%,72% 49%,70% 78%,37% 79%); transform:translate(calc(var(--fly)*120%),calc(var(--fly)*-90%)) rotate(-28deg); opacity:calc(.95 - var(--fly)*.85) }
 .manifesto { grid-column:1/-1; z-index:4; padding:24px; color:var(--paper); background:var(--dark) }
 .manifesto h2 { font-size:clamp(36px,6.7vw,110px); line-height:.98; letter-spacing:-.055em; margin-top:12px }
 .manifesto h2 span { color:var(--hot) }
@@ -326,7 +325,6 @@ body:has(dialog[open]) { overflow:hidden }
   .hero-art .sculpture { inset:-22% 16% -4% -3% }
   .hero-layout::before { background:radial-gradient(ellipse at 85% 109%,#6c2724 0%,#a2634d 21%,transparent 50%),linear-gradient(160deg,#eeede7,#e7e2d7 57%,#ceb6a5) }
   .hero-character { right:5%; width:auto; height:96% }
-  .near-ribbon { display:none }
   .cine-foot span { text-transform:none; letter-spacing:-.045em }
   .intro.cinematic::after { height:62svh }
   .lab .sculpture { inset:-12% 0 18% }
@@ -393,7 +391,7 @@ body:has(dialog[open]) { overflow:hidden }
   .scene-track::after { display:none }
   .scene-track .lab.scene-ready { position:relative; top:0 }
 }
-.light-lens .stage-grid,.light-lens .near-ribbon { visibility:hidden }
+.light-lens .stage-grid { visibility:hidden }
 .light-lens .hero-character,.light-lens .hero-copy { filter:none }
 
 /* =====================================================================
@@ -655,4 +653,11 @@ dialog .demo-canvas { height:min(610px,calc(100dvh - 220px)); min-height:160px }
 .case-gallery { will-change:auto }
 @media(hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference) {
  .case-gallery:hover { will-change:transform }
+}
+
+/* Number glyphs must fit their own ink bounds at every breakpoint. */
+.case-head { grid-template-columns:max-content minmax(0,1fr) auto }
+.case-index { min-width:2ch; width:max-content; line-height:1; letter-spacing:-.045em; padding:.04em .07em .08em .01em; white-space:nowrap }
+@media(max-width:1050px) {
+ .case-head { grid-template-columns:max-content minmax(0,1fr) }
 }

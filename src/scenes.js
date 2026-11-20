@@ -44,14 +44,7 @@ function createRenderer(gl, variant) {
     gl.uniform1f(dolly, travel);
     gl.uniform3f(placement, 0, 0, 1);
     gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
-    if (variant === 'hero' && travel > .06) {
-      // Two short arcs of the same mesh pass through the edges of the lens.
-      for (const side of [-1, 1]) {
-        gl.uniform3f(placement, side * (1.48 - travel * .70), side * (.64 - travel * .18), .42);
-        gl.uniform2f(rotation, pose.x + travel * side, pose.y + y + side * 1.2);
-        gl.drawElements(gl.TRIANGLES, 20 * 20 * 6, gl.UNSIGNED_SHORT, side === 1 ? 0 : 60 * 20 * 6 * 2);
-      }
-    }
+
   };
 }
 
@@ -72,10 +65,8 @@ export function mountScene(stage, motion, finePointer) {
   let angle = 0;
   let scroll = 0;
   let canAnimate = false;
-  let resolution = .82;
   let slowFrames = 0;
   let onDemand = false;
-  let gpuStalls = 0;
 
   function schedule(force = false) {
     if (onDemand && !force) return;
@@ -95,21 +86,19 @@ export function mountScene(stage, motion, finePointer) {
     // Explicit 30 fps cap: the browser has time for scroll and CSS input.
     // A 15 fps continuous WebGL pass previously starved the compositor.
     const interval = previous ? time - previous : 0;
-    if (interval && interval < 29 && !onDemand) {schedule(); return;}
-    if (interval > 59 && interval < 250) {slowFrames++; gpuStalls++;}
+    if (interval && interval < 29) {schedule(true); return;}
+    if (interval > 59 && interval < 250) {slowFrames++;}
     else slowFrames = Math.max(0, slowFrames - 1);
-    if (slowFrames >= 4 && resolution <= .62 && !onDemand) {
+    if (slowFrames >= 4 && !onDemand) {
       // Keep the last rendered frame on slow GPUs. The lens still travels via
       // compositing; resizing and manual camera controls can request a redraw.
       onDemand = true;
       stage.closest('.hero-layout')?.classList.add('light-lens');
     }
-    if (slowFrames >= 4 && resolution > .62) {
-      resolution = Math.max(.52, resolution * .76);
-      slowFrames = 0;
-    }
     const area = Math.max(1, canvas.clientWidth * canvas.clientHeight);
-    const ratio = resolution * Math.min(devicePixelRatio || 1, 1.2, Math.sqrt(230000 / area));
+    // Preserve edge definition on the displayed canvas. Slow GPUs reduce
+    // animation frequency through onDemand, while the image stays sharp.
+    const ratio = Math.min(devicePixelRatio || 1, 1.5, Math.sqrt(1500000 / area));
     const width = Math.round(canvas.clientWidth * ratio);
     const height = Math.round(canvas.clientHeight * ratio);
     if (!width || !height) return;
