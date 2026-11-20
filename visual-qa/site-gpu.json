@@ -1,0 +1,13 @@
+{
+  "first": {
+    "time": 22302.89999999851,
+    "geometries": 20,
+    "textures": 22
+  },
+  "last": {
+    "time": 38657.39999999851,
+    "geometries": 20,
+    "textures": 22
+  },
+  "offscreenStops": 3
+}

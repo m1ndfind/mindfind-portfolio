@@ -43,8 +43,9 @@ export function setupStudio() {
   let cinematic=false,compact=false,visible=false,artVisible=false;
   let frame=0,last=0,p=0,target=0,renderAvatar,loading=false,painted=NaN;
   function configure() {
-    cinematic=!reduced.matches && innerWidth>=900 && innerHeight>=690 &&
-      acts.every(act=>act.offsetHeight < innerHeight-100);
+    const eligible=!reduced.matches && innerWidth>=900 && innerHeight>=690;
+    story.classList.toggle('studio-cinema',eligible);
+    cinematic=eligible && acts.every(act=>act.offsetHeight < innerHeight-100);
     story.classList.toggle('studio-cinema',cinematic);
     anchors.forEach((anchor,i)=>{
       if (cinematic) {
@@ -81,6 +82,8 @@ export function setupStudio() {
     p+= (target-p)*(1-Math.exp(-12*dt));
     if (Math.abs(target-p)<.0001) p=target;
     if (painted!==p || Number.isNaN(painted)) {
+      stage.style.setProperty('--wine',cinematic?ease(.24,.38,p):0);
+      stage.style.setProperty('--scarlet',cinematic?ease(.61,.74,p):0);
       const left=ease(.245,.43,p)*(1-ease(.60,.78,p));
       art.style.transform=cinematic?'translate3d('+(104-104*left)+'%,0,0)':'';
       progressBar.style.transform='scaleX('+p+')';

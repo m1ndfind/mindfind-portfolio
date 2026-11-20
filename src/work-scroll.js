@@ -9,6 +9,15 @@ export function setupWorkScroll() {
   section.classList.add('motion-ready');
   const boundary = document.querySelector('.work-boundary');
   const marquee = [...section.querySelectorAll('.marquee-row')];
+  // Five repeats cover a wide viewport throughout a complete three-tile loop.
+  const marqueeVisibility=new IntersectionObserver(entries=>{
+    for(const entry of entries) entry.target.classList.toggle('marquee-visible',entry.isIntersecting);
+  });
+  for(const row of marquee){
+    const track=row.querySelector('.marquee-track');
+    for(const tile of [...track.children].slice(0,6)) track.append(tile.cloneNode(true));
+    marqueeVisibility.observe(row);
+  }
   const cards = [...section.querySelectorAll('.project')];
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const compact = matchMedia('(max-width: 1050px), (max-height: 819px)');

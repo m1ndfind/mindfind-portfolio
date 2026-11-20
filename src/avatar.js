@@ -44,7 +44,10 @@ export async function mountAvatar(figure) {
   const neck=asset.scene.getObjectByName('Head');
   const elbow=asset.scene.getObjectByName('ElbowL');
   const hand=asset.scene.getObjectByName('HandL');
-  const controls=[neck,elbow,hand];
+  const chest=asset.scene.getObjectByName('Chest');
+  const shoulder=asset.scene.getObjectByName('ShoulderL');
+  const otherElbow=asset.scene.getObjectByName('ElbowR');
+  const controls=[neck,elbow,hand,chest,shoulder,otherElbow];
   const poses=controls.map(node=>node.quaternion.clone());
   function platform(radius,height,y,color,roughness) {
     const geometry = new T.CylinderGeometry(radius,radius,height,96);
@@ -59,8 +62,28 @@ export async function mountAvatar(figure) {
   const shadow = new T.Mesh(new T.PlaneGeometry(1.8,.94),new T.MeshBasicMaterial({transparent:true,map:await new T.TextureLoader().loadAsync('assets/studio-shadow.png'),depthWrite:false}));
   shadow.rotation.x = -Math.PI/2; shadow.position.y = -.006; scene.add(shadow);
   let width=0,height=0,quality=1,slow=0;
+  let disposed=false;
+  addEventListener('pagehide',event=>{
+    if(event.persisted || disposed)return;
+    disposed=true;
+    mixer.stopAllAction();
+    mixer.uncacheRoot(asset.scene);
+    const resources=new Set();
+    scene.traverse(node=>{
+      if(!node.isMesh)return;
+      resources.add(node.geometry);
+      if(node.skeleton) resources.add(node.skeleton);
+      for(const material of [].concat(node.material)){
+        resources.add(material);
+        for(const value of Object.values(material))if(value?.isTexture)resources.add(value);
+      }
+    });
+    for(const resource of resources)resource.dispose();
+    key.shadow.dispose();
+    renderer.dispose();
+  });
   return (p,dt) => {
-    if (renderer.getContext().isContextLost()) return;
+    if (disposed || renderer.getContext().isContextLost()) return;
     slow=dt>.035?slow+1:Math.max(0,slow-1);
     if (slow>=12 && quality>.65) {quality-=.15;width=0;slow=0;}
     if (canvas.clientWidth!==width || canvas.clientHeight!==height) {
@@ -79,10 +102,19 @@ export async function mountAvatar(figure) {
     mixer.update(dt);
     // Mix absolute local poses without accumulating rotations between frames.
     controls.forEach((node,i)=>poses[i].copy(node.quaternion));
-    const gesture=Math.sin(Math.PI*Math.max(0,(p-.75)/.25));
-    neck.rotation.y+=.085*Math.sin(angle);
-    elbow.rotation.x-=.21*gesture;
-    hand.rotation.z-=.13*gesture;
+    const beat=mixer.time*Math.PI/6;
+    const present=Math.exp(-((p-.14)**2)/.016);
+    const invite=Math.exp(-((p-.89)**2)/.007);
+    const lift=.46*present+.95*invite;
+    neck.rotation.y+=.13*Math.sin(beat)-.12*present-.14*invite;
+    neck.rotation.z+=.062*Math.sin(beat+.7)+.035*arc;
+    neck.rotation.x+=.053*Math.sin(2*beat);
+    chest.rotation.y+=.10*arc-.045*invite;
+    shoulder.rotation.z-=lift*.52;
+    shoulder.rotation.x-=lift*.19;
+    elbow.rotation.x-=lift*.70;
+    hand.rotation.z-=lift*.22;
+    otherElbow.rotation.x-=.16*arc+.07*(1+Math.sin(beat));
     key.intensity=3-.55*arc;
     renderer.render(scene,camera);
     controls.forEach((node,i)=>node.quaternion.copy(poses[i]));

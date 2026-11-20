@@ -1,0 +1,242 @@
+[
+  {
+    "width": 320,
+    "id": "services",
+    "cinema": false,
+    "headingTop": 296.5,
+    "headingBottom": 339.171875,
+    "artBottom": 226.953125,
+    "overflow": 0,
+    "overlap": false
+  },
+  {
+    "width": 320,
+    "id": "about",
+    "cinema": false,
+    "headingTop": 297,
+    "headingBottom": 382.34375,
+    "artBottom": 189,
+    "overflow": 0,
+    "overlap": false
+  },
+  {
+    "width": 320,
+    "id": "contact",
+    "cinema": false,
+    "headingTop": 296.375,
+    "headingBottom": 381.71875,
+    "artBottom": 189,
+    "overflow": 0,
+    "overlap": false
+  },
+  {
+    "width": 375,
+    "id": "services",
+    "cinema": false,
+    "headingTop": 326.953125,
+    "headingBottom": 369.625,
+    "artBottom": 257.40625,
+    "overflow": 0,
+    "overlap": false
+  },
+  {
+    "width": 375,
+    "id": "about",
+    "cinema": false,
+    "headingTop": 326.671875,
+    "headingBottom": 412.015625,
+    "artBottom": 219.234375,
+    "overflow": 0,
+    "overlap": false
+  },
+  {
+    "width": 375,
+    "id": "contact",
+    "cinema": false,
+    "headingTop": 327.046875,
+    "headingBottom": 412.390625,
+    "artBottom": 219.234375,
+    "overflow": 0,
+    "overlap": false
+  },
+  {
+    "width": 390,
+    "id": "services",
+    "cinema": false,
+    "headingTop": 335.703125,
+    "headingBottom": 378.375,
+    "artBottom": 266.15625,
+    "overflow": 0,
+    "overlap": false
+  },
+  {
+    "width": 390,
+    "id": "about",
+    "cinema": false,
+    "headingTop": 335.421875,
+    "headingBottom": 420.765625,
+    "artBottom": 227.875,
+    "overflow": 0,
+    "overlap": false
+  },
+  {
+    "width": 390,
+    "id": "contact",
+    "cinema": false,
+    "headingTop": 335.796875,
+    "headingBottom": 421.140625,
+    "artBottom": 227.875,
+    "overflow": 0,
+    "overlap": false
+  },
+  {
+    "width": 768,
+    "id": "services",
+    "cinema": false,
+    "headingTop": 347.046875,
+    "headingBottom": 393.984375,
+    "artBottom": 277.5,
+    "overflow": 0,
+    "overlap": false
+  },
+  {
+    "width": 768,
+    "id": "about",
+    "cinema": false,
+    "headingTop": 347.28125,
+    "headingBottom": 394.21875,
+    "artBottom": 265,
+    "overflow": 0,
+    "overlap": false
+  },
+  {
+    "width": 768,
+    "id": "contact",
+    "cinema": false,
+    "headingTop": 347.5625,
+    "headingBottom": 394.5,
+    "artBottom": 265,
+    "overflow": 0,
+    "overlap": false
+  },
+  {
+    "width": 1024,
+    "id": "services",
+    "cinema": true,
+    "headingTop": 123.359375,
+    "headingBottom": 185.9375,
+    "artBottom": 706.546875,
+    "overflow": 0,
+    "overlap": false
+  },
+  {
+    "width": 1024,
+    "id": "about",
+    "cinema": true,
+    "headingTop": 177.546875,
+    "headingBottom": 302.703125,
+    "artBottom": 706.546875,
+    "overflow": 0,
+    "overlap": false
+  },
+  {
+    "width": 1024,
+    "id": "contact",
+    "cinema": true,
+    "headingTop": 274.609375,
+    "headingBottom": 399.765625,
+    "artBottom": 706.546875,
+    "overflow": 0,
+    "overlap": false
+  },
+  {
+    "width": 1440,
+    "id": "services",
+    "cinema": true,
+    "headingTop": 145.25,
+    "headingBottom": 233.234375,
+    "artBottom": 828,
+    "overflow": 0,
+    "overlap": false
+  },
+  {
+    "width": 1440,
+    "id": "about",
+    "cinema": true,
+    "headingTop": 173.2890625,
+    "headingBottom": 349.2578125,
+    "artBottom": 828,
+    "overflow": 0,
+    "overlap": false
+  },
+  {
+    "width": 1440,
+    "id": "contact",
+    "cinema": true,
+    "headingTop": 302.8125,
+    "headingBottom": 478.78125,
+    "artBottom": 828,
+    "overflow": 0,
+    "overlap": false
+  },
+  {
+    "width": 1920,
+    "id": "services",
+    "cinema": true,
+    "headingTop": 178.953125,
+    "headingBottom": 287.578125,
+    "artBottom": 993.59375,
+    "overflow": 0,
+    "overlap": false
+  },
+  {
+    "width": 1920,
+    "id": "about",
+    "cinema": true,
+    "headingTop": 221.46875,
+    "headingBottom": 438.71875,
+    "artBottom": 993.59375,
+    "overflow": 0,
+    "overlap": false
+  },
+  {
+    "width": 1920,
+    "id": "contact",
+    "cinema": true,
+    "headingTop": 368.453125,
+    "headingBottom": 585.703125,
+    "artBottom": 993.59375,
+    "overflow": 0,
+    "overlap": false
+  },
+  {
+    "width": 2560,
+    "id": "services",
+    "cinema": true,
+    "headingTop": 346.53125,
+    "headingBottom": 455.15625,
+    "artBottom": 1324.78125,
+    "overflow": 0,
+    "overlap": false
+  },
+  {
+    "width": 2560,
+    "id": "about",
+    "cinema": true,
+    "headingTop": 405.0625,
+    "headingBottom": 622.3125,
+    "artBottom": 1324.78125,
+    "overflow": 0,
+    "overlap": false
+  },
+  {
+    "width": 2560,
+    "id": "contact",
+    "cinema": true,
+    "headingTop": 552.046875,
+    "headingBottom": 769.296875,
+    "artBottom": 1324.78125,
+    "overflow": 0,
+    "overlap": false
+  }
+]

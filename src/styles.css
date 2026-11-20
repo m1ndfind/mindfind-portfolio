@@ -660,3 +660,10 @@ dialog .demo-canvas { height:min(610px,calc(100dvh - 220px)); min-height:160px }
 @media(max-width:1050px) {
  .case-head { grid-template-columns:max-content minmax(0,1fr) }
 }
+@media(prefers-reduced-motion:no-preference){
+ .marquee-track {animation:marquee-drift 30s linear infinite;animation-play-state:paused}
+ .marquee-visible .marquee-track {animation-play-state:running}
+ .marquee-row[data-direction="-1"] .marquee-track {animation-direction:reverse}
+ @keyframes marquee-drift {from{translate:0}to{translate:calc(-20% - 2.4px)}}
+ @media(max-width:760px){@keyframes marquee-drift {from{translate:0}to{translate:calc(-20% - 1.6px)}}}
+}
