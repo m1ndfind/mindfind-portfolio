@@ -120,11 +120,11 @@ export function setupStudio() {
     if (!artVisible || loading || reduced.matches) return;
     loading=true;
     try {
-      if (innerWidth<900 && !art.dataset.model) throw new Error('Mobile studio');
+
       const module=await import('./avatar.js');
       renderAvatar=await module.mountAvatar(art);
     } catch {
-      if (art.dataset.model) return;
+
       const module=await import('./avatar-sequence.js');
       baked=true;
       renderAvatar=module.mountSequence(art,schedule);

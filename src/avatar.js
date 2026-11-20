@@ -7,7 +7,7 @@ export async function mountAvatar(figure) {
   const renderer = new T.WebGLRenderer({canvas, alpha:true, antialias:true, powerPreference:'low-power'});
   const gl=renderer.getContext();
   const debug=gl.getExtension('WEBGL_debug_renderer_info');
-  if (!figure.dataset.model && !figure.hasAttribute('data-bake') && debug && /swiftshader|llvmpipe|software rasterizer/i.test(gl.getParameter(debug.UNMASKED_RENDERER_WEBGL))) {
+  if (!figure.hasAttribute('data-bake') && debug && /swiftshader|llvmpipe|software rasterizer/i.test(gl.getParameter(debug.UNMASKED_RENDERER_WEBGL))) {
     renderer.dispose();
     throw new Error('Use baked studio on a software renderer');
   }
@@ -22,26 +22,18 @@ export async function mountAvatar(figure) {
   const rim = new T.DirectionalLight(0xd5dcff,1.7);
   rim.position.set(4,2,-2);
   scene.add(rim);
-  let mixer;
-  if (figure.dataset.model) {
-    const {GLTFLoader} = await import('./vendor/glb.js');
-    const asset = await new GLTFLoader().loadAsync(figure.dataset.model);
-    const bounds = new T.Box3().setFromObject(asset.scene);
-    const center = bounds.getCenter(new T.Vector3());
-    const scale = 2.65 / (bounds.max.y - bounds.min.y);
-    asset.scene.scale.setScalar(scale);
-    asset.scene.position.set(-center.x*scale,-bounds.min.y*scale,-center.z*scale);
-    subject.add(asset.scene);
-    const idle = asset.animations.find(clip => /idle/i.test(clip.name));
-    if (idle) {mixer = new T.AnimationMixer(asset.scene); mixer.clipAction(idle).play();}
-    figure.querySelector('figcaption').textContent = 'MINDFIND® / АВАТАР';
-  } else {
-    const texture = await new T.TextureLoader().loadAsync('assets/studio-figure.webp');
-    texture.colorSpace = T.SRGBColorSpace;
-    const illustration = new T.Mesh(new T.PlaneGeometry(2.65*663/967,2.65),new T.MeshBasicMaterial({map:texture,transparent:true,alphaTest:.025}));
-    illustration.position.y = 1.325;
-    subject.add(illustration);
-  }
+  const {GLTFLoader} = await import('./vendor/glb.js');
+  const asset = await new GLTFLoader().loadAsync(figure.dataset.model);
+  const bounds = new T.Box3().setFromObject(asset.scene);
+  const center = bounds.getCenter(new T.Vector3());
+  const scale = 2.65 / (bounds.max.y - bounds.min.y);
+  asset.scene.scale.setScalar(scale);
+  asset.scene.position.set(-center.x*scale,-bounds.min.y*scale,-center.z*scale);
+  subject.add(asset.scene);
+  const mixer = new T.AnimationMixer(asset.scene);
+  mixer.clipAction(asset.animations.find(clip => clip.name==='Idle')).play();
+  const neck=asset.scene.getObjectByName('Head');
+  const wrist=asset.scene.getObjectByName('LeftSleeve');
   function platform(radius,height,y,color,roughness) {
     const geometry = new T.CylinderGeometry(radius,radius,height,96);
     const mesh = new T.Mesh(geometry,new T.MeshStandardMaterial({color,roughness,metalness:.17}));
@@ -51,11 +43,6 @@ export async function mountAvatar(figure) {
   platform(1.15,.12,-.07,0xc9c3b7,.68);
   platform(1.13,.018,-.139,0xa52317,.45);
   platform(1.11,.045,-.166,0x69665e,.7);
-  if (!figure.dataset.model) {
-    const seat = new T.Mesh(new T.CylinderGeometry(.49,.38,.90,64),new T.MeshStandardMaterial({color:0xa49d92,roughness:.76}));
-    seat.position.set(-.05,.44,-.24);
-    scene.add(seat);
-  }
   // Baked contact occlusion avoids a shadow-map pass for the figure.
   const shadow = new T.Mesh(new T.PlaneGeometry(1.8,.94),new T.MeshBasicMaterial({transparent:true,map:await new T.TextureLoader().loadAsync('assets/studio-shadow.png'),depthWrite:false}));
   shadow.rotation.x = -Math.PI/2; shadow.position.y = -.006; scene.add(shadow);
@@ -71,13 +58,18 @@ export async function mountAvatar(figure) {
     }
     idleTime+=dt;
     const arc=Math.sin(Math.PI*p);
-    const angle=.04+.46*arc;
-    const distance=Math.max(5.3,3.8/camera.aspect)+.8*p-.32*arc;
+    const turn=p*p*(3-2*p);
+    const angle=.16+Math.PI*2*(turn-.21*Math.sin(Math.PI*turn));
+    const distance=Math.max(4.7,3.7/camera.aspect)+1.05*p-.14*arc;
     camera.position.set(Math.sin(angle)*distance,2.35+.25*arc,Math.cos(angle)*distance);
-    camera.lookAt(0,1.22,0);
+    camera.lookAt(0,1.44-.23*p,0);
     subject.rotation.z=.009*Math.sin(idleTime*1.35);
     subject.scale.y=1+.006*Math.sin(idleTime*1.65);
-    mixer?.update(dt);
+    mixer.update(dt);
+    // Mix absolute local poses without accumulating rotations between frames.
+    neck.rotation.y=.028*Math.sin(idleTime*.98)+.17*Math.sin(angle);
+    wrist.rotation.x=-.32*Math.sin(Math.PI*Math.max(0,(p-.75)/.25));
+    wrist.rotation.z=.022*Math.sin(idleTime*.98)-.19*Math.sin(Math.PI*Math.max(0,(p-.75)/.25));
     key.intensity=3-.55*arc;
     renderer.render(scene,camera);
     figure.classList.add('live');

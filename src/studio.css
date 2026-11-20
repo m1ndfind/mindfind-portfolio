@@ -61,3 +61,6 @@
 @media(prefers-reduced-motion:reduce){.studio-art.baked canvas{animation:none}.studio-art canvas{visibility:hidden}.studio-art.live .studio-still{visibility:visible}}
 .studio-cinema .studio-art,.studio-cinema .studio-act {contain:layout paint;will-change:transform,opacity}
 .studio-cinema .studio-act{padding:6px;margin:-6px}
+
+.brief-figure {width:min(100%,420px);margin:auto;object-fit:contain}
+@media(max-width:899px){.brief-figure {display:none}}
