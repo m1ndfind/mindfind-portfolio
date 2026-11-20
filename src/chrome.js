@@ -2,7 +2,6 @@
 export function ribbonMesh(variant, rings = 144, sides = 20) {
   const vertices = [];
   const indices = [];
-  const showcase = variant === 'showcase';
   const normalize = ([x, y, z]) => {
     const length = Math.hypot(x, y, z);
     return [x / length, y / length, z / length];
@@ -13,7 +12,7 @@ export function ribbonMesh(variant, rings = 144, sides = 20) {
     a[0] * b[1] - a[1] * b[0]
   ];
   function center(t) {
-    const lobe = (showcase ? 2 : 3) * t;
+    const lobe = 3 * t;
     const r = 0.96 + 0.44 * Math.cos(lobe);
     return [r * Math.cos(t), r * Math.sin(t), 0.54 * Math.sin(lobe)];
   }
@@ -24,8 +23,8 @@ export function ribbonMesh(variant, rings = 144, sides = 20) {
     const tangent = normalize(next.map((n, i) => n - previous[i]));
     const right = normalize(cross(tangent, [0, 0, 1]));
     const up = cross(right, tangent);
-    const twist = (showcase ? 2 : 1) * t + 0.55 * Math.sin(3 * t);
-    const width = (showcase ? 0.42 : 0.48) * (0.8 + 0.2 * Math.cos(3 * t + 0.45));
+    const twist = t + 0.55 * Math.sin(3 * t);
+    const width = 0.48 * (0.8 + 0.2 * Math.cos(3 * t + 0.45));
     const u = width * Math.cos(angle);
     const v = (0.105 + 0.025 * Math.cos(3 * t)) * Math.sin(angle);
     return point.map((p, i) => p
@@ -113,6 +112,5 @@ void main() {
 }`;
 
 export const scenePose = {
-  hero: { x: .32, y: -.33, scale: .45 },
-  showcase: { x: -.44, y: .46, scale: .47 }
+  hero: { x: .32, y: -.33, scale: .45 }
 };

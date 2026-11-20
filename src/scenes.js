@@ -50,8 +50,6 @@ function createRenderer(gl, variant) {
 
 export function mountScene(stage, motion, finePointer) {
   const canvas = stage.querySelector('canvas');
-  const control = stage.querySelector('.scene-control');
-  const range = control?.querySelector('input');
   let gl;
   let draw;
   let visible = false;
@@ -62,7 +60,6 @@ export function mountScene(stage, motion, finePointer) {
   let mouseY = 0;
   let x = 0;
   let y = 0;
-  let angle = 0;
   let scroll = 0;
   let canAnimate = false;
   let slowFrames = 0;
@@ -109,11 +106,11 @@ export function mountScene(stage, motion, finePointer) {
     previous = time;
     const t = elapsed / 1000;
     const targetX = canAnimate ? mouseY * .23 + scroll * .38 : 0;
-    const targetY = angle + (canAnimate ? scroll * (stage.dataset.scene === 'hero' ? 1.15 : 2.6) + mouseX * .28 + Math.sin(t * .55) * .08 : 0);
+    const targetY = (canAnimate ? scroll * 1.15 + mouseX * .28 + Math.sin(t * .55) * .08 : 0);
     const follow = onDemand ? 1 : 1 - Math.exp(-dt / 130);
     x = canAnimate ? x + (targetX - x) * follow : targetX;
     y = canAnimate ? y + (targetY - y) * follow : targetY;
-    draw(width, height, x, y, canAnimate ? t * .8 : 0, canAnimate && stage.dataset.scene === 'hero' ? scroll : 0);
+    draw(width, height, x, y, canAnimate ? t * .8 : 0, canAnimate ? scroll : 0);
     stage.classList.add('scene-ready');
     if (canAnimate) schedule();
   }
@@ -124,7 +121,6 @@ export function mountScene(stage, motion, finePointer) {
       gl ??= canvas.getContext('webgl', { alpha: true, antialias: true, failIfMajorPerformanceCaveat: true });
       if (!gl) return;
       draw = createRenderer(gl, stage.dataset.scene);
-      if (control) control.hidden = false;
       schedule(true);
     } catch (error) {
       console.warn('WebGL preview uses its static image.', error.message);
@@ -152,21 +148,10 @@ export function mountScene(stage, motion, finePointer) {
     mouseY = (event.clientY - rect.top) / rect.height - .5;
   });
   pointerSurface.addEventListener('pointerleave', () => { mouseX = 0; mouseY = 0; });
-  for (const preset of stage.querySelectorAll('[data-angle]')) {
-    preset.addEventListener('click', () => {
-      range.value = preset.dataset.angle;
-      range.dispatchEvent(new Event('input'));
-    });
-  }
-  range?.addEventListener('input', () => {
-    angle = Number(range.value) * Math.PI / 180;
-    schedule(true);
-  });
   canvas.addEventListener('webglcontextlost', (event) => {
     event.preventDefault();
     draw = null;
     stage.classList.remove('scene-ready');
-    if (control) control.hidden = true;
   });
   canvas.addEventListener('webglcontextrestored', initialize);
   const observer = new IntersectionObserver(([entry]) => {

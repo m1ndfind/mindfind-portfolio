@@ -1,0 +1,63 @@
+#mindfind-story {background:#e9e6e1;color:#171614;position:relative}
+.studio-stage {position:relative;isolation:isolate;background:radial-gradient(ellipse at 70% 42%,#f9f7f1,transparent 62%),#e9e6e1}
+.studio-art {position:relative;height:clamp(230px,38svh,460px);overflow:hidden;pointer-events:none;text-align:center}
+.studio-art canvas,.studio-still {position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.studio-still {padding:4% 0 9%;filter:drop-shadow(4px 12px 8px #30241825)}
+.studio-art.live .studio-still {visibility:hidden}
+.studio-orbit {position:absolute;inset:9% 13% 13%;border:1px solid #a59f935c;border-radius:50%;transform:rotate(-18deg);background:radial-gradient(ellipse at 55% 35%,#faf8f233,#c7c1b340)}
+.studio-art figcaption,.studio-label {font:600 12px/1.35 monospace;letter-spacing:.08em;text-transform:uppercase}
+.studio-art figcaption {position:absolute;inset:auto 0 1%;color:#514f49}
+.studio-act {position:relative;padding:clamp(32px,5vw,90px);max-width:900px;margin:auto}
+.studio-label {display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.studio-label:before {content:"";width:28px;height:3px;background:var(--red)}
+.studio-act h2,.studio-brief h2 {margin:0 0 .3em;font-size:clamp(44px,6.3vw,112px);line-height:.97;letter-spacing:-.065em}
+.studio-act h2 .mask {display:inline-block;overflow:clip;vertical-align:bottom;padding:.09em .05em .09em 0;margin:-.09em -.05em -.09em 0}
+.mask b {display:block;font-weight:inherit}
+.studio-act>p:not(.studio-label) {font-size:clamp(16px,1.5vw,24px);line-height:1.45;margin:.8em 0;max-width:37ch}
+.studio-services,.studio-process {padding:0;list-style:none}
+.studio-services li {border-top:1px solid #b6b2a8;padding:clamp(6px,1vh,14px) 0;display:flex;gap:16px}
+.studio-services small {font:12px monospace;color:var(--red);padding-top:4px}
+.studio-services strong {font-size:clamp(18px,1.45vw,27px);letter-spacing:-.035em}
+.studio-services p {font-size:clamp(16px,1.08vw,18px);line-height:1.35;color:#504e48;margin-top:3px}
+.studio-process {display:flex;flex-wrap:wrap;gap:8px 16px;max-width:42ch}
+.studio-process li {font-size:16px}.studio-process li:not(:last-child):after {content:" →";color:var(--red)}
+.studio-brief {display:grid;grid-template-columns:1fr 1fr;gap:6vw;background:#f9f7f1;color:#171614;padding:clamp(36px,8vw,130px) var(--edge)}
+.studio-brief h2 span {color:var(--red)}
+.studio-brief form {width:100%;max-width:640px}.studio-brief form p {line-height:1.5}
+#mindfind-story .studio-anchor {position:absolute;top:0;background:none;border:0;box-shadow:none;margin:0}
+.studio-meter {display:none}
+.studio-cinema {height:390svh}
+.studio-cinema .studio-stage {position:sticky;top:0;height:100svh;overflow:clip}
+.studio-cinema .studio-art {position:absolute;top:6%;left:0;width:48%;height:86%;transform:translateX(var(--art-x,104%))}
+.studio-cinema .studio-act {position:absolute;top:51%;left:var(--edge);width:45%;max-width:820px;padding:0;transform:translateY(-50%)}
+.studio-cinema .studio-act[data-anchor=about] {left:auto;right:var(--edge)}
+.studio-cinema .studio-meter {display:block;position:absolute;bottom:4%;left:var(--edge);right:var(--edge);height:1px;background:#c2bcb0}
+.studio-meter i {display:block;height:3px;background:var(--red);transform-origin:left;transform:scaleX(var(--progress,0))}
+.studio-cinema>.studio-anchor {scroll-margin:0}
+.site-head {transition:background .52s,border-color .52s}
+.site-head nav,.site-head .identity,.site-head .head-role,.site-head .wordmark {transition:opacity .52s,transform .52s cubic-bezier(.16,1,.3,1)}
+.site-head.compact {pointer-events:none;background:transparent;border-color:transparent;box-shadow:none}
+.compact nav,.compact .identity,.compact .head-role,.compact .reading-progress {opacity:0;transform:translateY(-18px);pointer-events:none}
+.compact .wordmark {pointer-events:auto;justify-self:start;background:#efede7eb;border-radius:6px;padding:5px 9px;transform:scale(.86);transform-origin:left}
+.studio-menu,#studio-menu button {width:46px;height:46px;border:0;border-radius:50%;background:var(--ink);color:white}
+.studio-menu {position:absolute;right:var(--edge);top:8px;opacity:0;pointer-events:none;transition:opacity .5s;display:grid;place-content:center;gap:5px}
+.studio-menu i {width:17px;height:2px;background:white}
+.compact .studio-menu {opacity:1;pointer-events:auto}
+#studio-menu {margin:0;width:100%;height:100dvh;max-width:none;max-height:none;border:0;border-radius:0;padding:var(--edge);background:#e9e6e1}
+#studio-menu button {display:block;margin-left:auto;font-size:28px}
+#studio-menu nav {display:grid;margin:7vh auto;width:min(900px,100%)}#studio-menu a {border-bottom:1px solid #aaa69d;padding:.16em 0;font-size:clamp(40px,7vw,100px);letter-spacing:-.06em;font-weight:750}
+@media(max-width:899px){.studio-brief{grid-template-columns:1fr}.studio-art{background:#e9e6e1}.studio-act{padding:32px var(--edge) 40px}.studio-act+.studio-act{border-top:1px solid #b8b3aa}.studio-services li{padding:12px 0}}
+@media(prefers-reduced-motion:reduce){.site-head,.site-head *{transition:none!important}}
+/* Keep the figure in view while the mobile chapters flow underneath. */
+@media(max-width:899px) and (min-height:640px) and (prefers-reduced-motion:no-preference) {
+  .studio-art {position:sticky;top:0;height:clamp(184px,27svh,265px);z-index:1;border-bottom:1px solid #c8c2b7;background:radial-gradient(ellipse at center,#f8f5ef,#e9e6e1 75%)}
+  .studio-art figcaption {bottom:8px}
+  #mindfind-story .studio-anchor {scroll-margin-top:calc(clamp(184px,27svh,265px) - 70px)}
+}
+.studio-cinema>.studio-anchor {scroll-margin-top:-95px}
+.studio-brief form {margin-top:0;border-radius:16px}
+.studio-art.baked canvas {animation:studio-breathe 5s ease-in-out infinite alternate;transform-origin:50% 74%}
+@keyframes studio-breathe {to{transform:rotate(.22deg) scaleY(1.004)}}
+@media(prefers-reduced-motion:reduce){.studio-art.baked canvas{animation:none}.studio-art canvas{visibility:hidden}.studio-art.live .studio-still{visibility:visible}}
+.studio-cinema .studio-art,.studio-cinema .studio-act {contain:layout paint;will-change:transform,opacity}
+.studio-cinema .studio-act{padding:6px;margin:-6px}

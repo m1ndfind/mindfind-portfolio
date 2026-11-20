@@ -8,6 +8,7 @@
   <title>Mindfind® — дизайн и разработка сайтов</title>
   <link rel="icon" href="assets/favicon.svg">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="studio.css">
   <script type="module" src="main.js"></script>
 </head>
 <body id="top">
@@ -26,7 +27,12 @@
       <a href="#about">Обо мне</a><a href="#contact">Контакты</a>
     </nav>
     <a class="identity mono" href="#about"><img src="assets/badge.webp" alt="" width="38" height="38"><span>Автор<br><b>Mindfind</b></span></a>
+    <button class="studio-menu" aria-label="Открыть меню" aria-controls="studio-menu" aria-expanded="false" inert><i></i><i></i></button>
   </header>
+  <dialog id="studio-menu" aria-label="Меню сайта"><button aria-label="Закрыть меню">×</button><nav>
+      <a href="#work">Работы</a><a href="#services">Услуги</a>
+      <a href="#about">Обо мне</a><a href="#contact">Контакты</a>
+    </nav></dialog>
   <main id="main" tabindex="-1">
     <section class="intro" aria-labelledby="hero-title">
       <div class="hero shell">
@@ -135,52 +141,21 @@
       </div>
     </section>
 
-    <section class="showcase dark" aria-labelledby="showcase-title">
-      <div class="shell section-pad">
-        <div class="section-rule mono"><span>02 / Creative Lab</span><span>WebGL / 02</span></div>
-        <div class="showcase-head"><h2 class="display section-title" id="showcase-title">Хром<br>в движении<span class="red">.</span></h2><p>Процедурная скульптура, которая меняет ракурс и отражения. Такой объект может стать интерактивной демонстрацией материала или центральным образом рекламной кампании.</p></div>
-        <div class="scene-track"><figure class="stage lab" data-scene="showcase">
-          <div class="stage-grid" aria-hidden="true"></div>
-          <div class="sculpture" aria-hidden="true"><img src="assets/showcase-chrome.webp" alt="" width="720" height="720" loading="lazy"><canvas></canvas></div>
-          <aside class="lab-notes" aria-label="Направления разработки"><span class="mono">Creative Lab</span><ul><li>WebGL</li><li>Интерактивная разработка</li><li>Адаптивный дизайн</li><li>Креативная вёрстка</li></ul></aside>
-          <div class="scene-control" hidden><div class="angle-presets" aria-label="Ракурсы скульптуры"><button type="button" data-angle="-55">Изгиб</button><button type="button" data-angle="80">Кромка</button></div><label for="scene-angle">Ракурс</label><input id="scene-angle" type="range" min="-180" max="180" value="0"></div>
-        </figure></div>
+    <section id="mindfind-story" aria-label="Студия Mindfind">
+      <div class="studio-stage">
+        <figure class="studio-art" data-model="">
+          <div class="studio-orbit" aria-hidden="true"></div>
+          <img class="studio-still" src="assets/studio-figure.webp" alt="Авторский персонаж Mindfind в кепке и тёмных очках" loading="lazy" width="663" height="967">
+          <canvas aria-hidden="true"></canvas>
+          <figcaption>MF® / ЭТЮД ПО ИЛЛЮСТРАЦИИ</figcaption>
+        </figure>
+        <article class="studio-act" data-anchor="services"><span id="services" class="studio-anchor"></span><p class="studio-label">03 / Направления</p><h2>Что я делаю?</h2><ul class="studio-services"><li><small>01</small><div><strong>Рекламные лендинги</strong><p>Страница для одной услуги или продукта. Помогаю сформулировать предложение и выстроить путь к обращению.</p></div></li><li><small>02</small><div><strong>Промосайты брендов</strong><p>Цифровые презентации для запуска продукта, кампании или знакомства с брендом.</p></div></li><li><small>03</small><div><strong>Интерактивные веб-проекты</strong><p>Интерактивные истории и демонстрации, в которых посетитель может поучаствовать.</p></div></li><li><small>04</small><div><strong>Редизайн сайтов</strong><p>Обновление структуры, визуальной подачи и мобильной версии существующего сайта.</p></div></li><li><small>05</small><div><strong>Креативная разработка</strong><p>Адаптивная вёрстка, выразительное движение и WebGL для сайтов и портфолио.</p></div></li></ul></article>
+        <article class="studio-act" data-anchor="about"><span id="about" class="studio-anchor"></span><p class="studio-label">04 / Об авторе</p><h2>Больше, чем просто код.</h2><p class="studio-prose">Я Mindfind, независимый дизайнер и веб-разработчик. Собираю структуру, графику и движение вокруг одной идеи, чтобы посетитель быстро понял, что вы предлагаете, и запомнил, как вы это показали.</p><p>Сопровождаю проект от первого разговора до запуска.</p><ol class="studio-process"><li>Знакомство</li><li>Объём и сроки</li><li>Структура</li><li>Дизайн</li><li>Разработка</li><li>Запуск</li></ol></article>
+        <article class="studio-act" data-anchor="contact"><span id="contact" class="studio-anchor"></span><p class="studio-label">05 / Контакт</p><h2>Какой сайт вам нужен?</h2><p>Опишите идею и подготовьте бриф для будущего разговора.</p><a class="cta cta-black" href="#brief">Подготовить бриф ↘</a></article>
+        <div class="studio-meter" aria-hidden="true"><i></i></div>
       </div>
     </section>
-
-    <section class="shell section-pad" id="services">
-      <div class="section-rule mono"><span>03 / Направления</span><span>Дизайн и разработка</span></div>
-      <h2 class="display section-title">Что я делаю<span class="red">.</span></h2>
-      <div class="services">
-        <div class="service"><h3><span class="mono">01</span>Рекламные лендинги</h3><p>Страница для одной услуги или продукта. Помогаю сформулировать предложение и выстроить путь к обращению.</p></div>
-        <div class="service"><h3><span class="mono">02</span>Промосайты брендов</h3><p>Цифровые презентации для запуска продукта, кампании или знакомства с брендом.</p></div>
-        <div class="service"><h3><span class="mono">03</span>Интерактивные веб-проекты</h3><p>Интерактивные истории и демонстрации, в которых посетитель может поучаствовать.</p></div>
-        <div class="service"><h3><span class="mono">04</span>Редизайн сайтов</h3><p>Обновление структуры, визуальной подачи и мобильной версии существующего сайта.</p></div>
-        <div class="service"><h3><span class="mono">05</span>Креативная разработка</h3><p>Адаптивная вёрстка, выразительное движение и WebGL для сайтов и портфолио.</p></div>
-      </div>
-    </section>
-
-    <section class="shell section-pad" id="about">
-      <div class="section-rule mono"><span>04 / Об авторе</span><span>Mindfind®</span></div>
-      <div class="about-layout">
-        <div><h2 class="display section-title">Больше, чем<br>просто код<span class="red">.</span></h2>
-          <p class="about-copy about-reveal">Я Mindfind, независимый дизайнер и веб-разработчик. Собираю структуру, графику и движение вокруг одной идеи, чтобы посетитель быстро понял, что вы предлагаете, и запомнил, как вы это показали.</p>
-          <p class="about-copy">Сопровождаю проект от первого разговора до запуска.</p>
-          <ol class="process mono"><li>Знакомство</li><li>Объём и сроки</li><li>Структура</li><li>Дизайн</li><li>Разработка</li><li>Запуск</li></ol>
-        </div>
-        <figure class="about-photo"><img src="assets/character.webp" alt="Оригинальный персонаж Mindfind в полный рост" width="800" height="1200" loading="lazy"><figcaption class="mono">MF / 01</figcaption></figure>
-      </div>
-
-    </section>
-
-    <section class="contact" id="contact">
-      <div class="shell section-pad">
-        <div class="section-rule mono"><span>05 / Контакт</span><span>Mindfind®</span></div>
-        <div class="contact-layout">
-          <div><h2 class="display section-title">Какой сайт<br>вам нужен?</h2>
-            <a class="cta cta-black" href="#brief" data-magnetic>Подготовить бриф <svg aria-hidden="true"><use href="#arrow"/></svg></a>
-          </div>
-          <form id="brief" aria-describedby="brief-note">
+    <section class="studio-brief" aria-labelledby="brief-title"><div><p class="studio-label">Mindfind® / Бриф</p><h2 id="brief-title">О проекте<span>.</span></h2></div><form id="brief" aria-describedby="brief-note">
             <p id="brief-note">Заполните три поля и скопируйте бриф для будущего разговора. Данные останутся в вашем браузере. Отправка автору пока недоступна.</p>
             <label>Ваше имя<input name="name" autocomplete="name" maxlength="100" required></label>
             <label>Где вам ответить<input name="contact" placeholder="Telegram или email" maxlength="200" required></label>
@@ -188,10 +163,7 @@
             <button class="cta cta-black" id="copy-brief" type="submit" disabled>Скопировать заявку <svg aria-hidden="true"><use href="#arrow"/></svg></button>
             <noscript><p>Для копирования заявки включите JavaScript.</p></noscript>
             <p id="status" role="status"></p>
-          </form>
-        </div>
-      </div>
-    </section>
+          </form></section>
   </main>
   <footer class="dark"><div class="shell footer-layout">
     <a class="wordmark" href="#top">MINDFIND<sup>®</sup></a><span class="mono">© 2026 Mindfind</span><a href="#brief">Подготовить бриф</a><a href="#top">Наверх ↑</a>

@@ -1,3 +1,4 @@
+import { setupStudio } from './studio.js';
 import { setupIntro } from './intro.js';
 import { setupWorkScroll } from './work-scroll.js';
 import { setupChoreography } from './choreography.js';
@@ -10,3 +11,5 @@ setupMotion();
 setupChoreography();
 setupWorkScroll();
 setupIntro();
+
+setupStudio();

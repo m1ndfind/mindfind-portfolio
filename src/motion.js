@@ -19,24 +19,6 @@ export function setupMotion() {
     pointer.addEventListener('change', clear);
   }
 
-  const measures = new Map();
-  let frame = 0;
-  function update() {
-    frame = 0;
-    if (reduced.matches) return;
-    for (const [element, apply] of measures) {
-      const rect = element.getBoundingClientRect();
-      const progress = Math.max(-1, Math.min(1, (innerHeight / 2 - rect.top - rect.height / 2) / (innerHeight / 2)));
-      apply(progress);
-    }
-  }
-  function schedule() {
-    if (!frame && !reduced.matches && measures.size) frame = requestAnimationFrame(update);
-  }
-  addEventListener('scroll', schedule, { passive: true });
-  addEventListener('resize', schedule);
-  reduced.addEventListener('change', schedule);
-
   const scenes = new IntersectionObserver((entries) => {
     for (const entry of entries) {
       if (!entry.isIntersecting) continue;
@@ -50,13 +32,6 @@ export function setupMotion() {
           updateScroll(Number(intro.querySelector('.hero').style.getPropertyValue('--fly')));
           return;
         }
-        const track = stage.closest('.scene-track') || stage;
-        const active = new IntersectionObserver(([visibility]) => {
-          if (visibility.isIntersecting) measures.set(track, updateScroll);
-          else measures.delete(track);
-          schedule();
-        });
-        active.observe(track);
       }).catch((error) => console.warn('Static sculpture preview is available.', error.message));
     }
   });
