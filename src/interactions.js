@@ -40,21 +40,23 @@ export function setupProjects() {
   dialog.querySelector('#next-project').addEventListener('click', () => {
     displayProject(links[(current + 1) % links.length]);
   });
+  function openProject(link, source = link) {
+    opener = source;
+    displayProject(link);
+    dialog.showModal();
+    selectDevice(matchMedia('(max-width: 760px)').matches ? 'phone' : 'desktop');
+  }
   for (const link of links) {
-    link.addEventListener('click', (event) => {
+    link.addEventListener('click', event => {
       if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
       event.preventDefault();
-      opener = link;
-      displayProject(link);
-      dialog.showModal();
-      selectDevice(matchMedia('(max-width: 760px)').matches ? 'phone' : 'desktop');
+      openProject(link);
     });
   }
-  // Every case shot opens the same working sandboxed demo as the top CTA.
   for (const shot of document.querySelectorAll('.gallery-open')) {
     shot.addEventListener('click', () => {
-      const link = shot.closest('.project')?.querySelector('[data-project]');
-      if (link) link.click();
+      const link = shot.closest('.project').querySelector('[data-project]');
+      openProject(link, shot);
     });
   }
   frame.addEventListener('load', () => { loading.textContent = ''; });

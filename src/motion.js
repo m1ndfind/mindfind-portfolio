@@ -9,8 +9,10 @@ export function setupMotion() {
     button.addEventListener('pointermove', (event) => {
       if (!pointer.matches || reduced.matches) return;
       const rect = button.getBoundingClientRect();
-      button.style.setProperty('--mx', ((event.clientX - rect.left) / rect.width - .5) * 9 + 'px');
-      button.style.setProperty('--my', ((event.clientY - rect.top) / rect.height - .5) * 7 + 'px');
+      const offsetX = parseFloat(button.style.getPropertyValue('--mx')) || 0;
+      const offsetY = parseFloat(button.style.getPropertyValue('--my')) || 0;
+      button.style.setProperty('--mx', ((event.clientX - rect.left + offsetX) / rect.width - .5) * 9 + 'px');
+      button.style.setProperty('--my', ((event.clientY - rect.top + offsetY) / rect.height - .5) * 7 + 'px');
     });
     button.addEventListener('pointerleave', clear);
     reduced.addEventListener('change', clear);

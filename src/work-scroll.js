@@ -11,7 +11,7 @@ export function setupWorkScroll() {
   const marquee = [...section.querySelectorAll('.marquee-row')];
   const cards = [...section.querySelectorAll('.project')];
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-  const compact = matchMedia('(max-width: 760px), (max-height: 630px)');
+  const compact = matchMedia('(max-width: 1050px), (max-height: 819px)');
   let viewable = false;
   let ticking = 0;
   let previous = 0;
@@ -26,6 +26,13 @@ export function setupWorkScroll() {
   }, {rootMargin: '0px 0px -8% 0px', threshold: .08});
   cards.forEach(card => revealObserver.observe(card));
 
+  const resetTilts = () => {
+    for (const gallery of section.querySelectorAll('.case-gallery')) {
+      gallery.style.removeProperty('--tilt-x');
+      gallery.style.removeProperty('--tilt-y');
+    }
+  };
+  reduced.addEventListener('change', resetTilts);
   const finePointer = matchMedia('(hover:hover) and (pointer:fine)');
   for (const gallery of section.querySelectorAll('.case-gallery')) {
     gallery.addEventListener('pointermove', event => {
@@ -45,6 +52,7 @@ export function setupWorkScroll() {
   function paint(time) {
     ticking = 0;
     if (document.hidden || !viewable) return;
+    if (reduced.matches) return;
     const dt = Math.min(64, previous ? Math.max(1, time - previous) : 16.7);
     previous = time;
     const scroll = scrollY;
@@ -53,8 +61,6 @@ export function setupWorkScroll() {
     easedScroll += (scroll - easedScroll) * (1 - Math.exp(-dt / 115));
     if (Math.abs(scroll - easedScroll) < .12) easedScroll = scroll;
 
-    const sectionTop = section.getBoundingClientRect().top + scroll;
-    const local = easedScroll - sectionTop;
     const seamTop = boundary.getBoundingClientRect().top + scroll - easedScroll;
     const seam = smooth(clamp((innerHeight * .9 - seamTop) / (innerHeight * .65 + boundary.offsetHeight * .25)));
     boundary.style.setProperty('--seam', (100 * (1-seam)).toFixed(3) + '%');
@@ -78,8 +84,7 @@ export function setupWorkScroll() {
           frame.style.setProperty('--stack-shade', '0');
           return;
         }
-        const pin = card.querySelector('.story-pin');
-        const pinTop = parseFloat(getComputedStyle(pin).top) || 110;
+        const pinTop = parseFloat(getComputedStyle(card).top) || 110;
         const nextTop = next.getBoundingClientRect().top + scroll - easedScroll;
         const start = innerHeight * .98;
         const end = pinTop + 30;
@@ -100,6 +105,21 @@ export function setupWorkScroll() {
     requestPaint();
   }, {rootMargin: '400px 0px 400px 0px'});
   observer.observe(section);
+  function fitCards() {
+    if (!section.classList.contains('is-stacking')) return;
+    const headroom = document.querySelector('.site-head').offsetHeight;
+    for (const card of cards) {
+      const frame = card.querySelector('.story-frame');
+      const padding = parseFloat(getComputedStyle(frame).paddingTop) * 2 + 4;
+      const head = card.querySelector('.case-head').offsetHeight;
+      const footer = card.querySelector('.case-bottom').offsetHeight;
+      const available = innerHeight - headroom - 36 - padding - head - footer;
+      card.style.setProperty('--case-gallery-height', Math.max(220, Math.min(580, available)) + 'px');
+    }
+  }
+  const resize = new ResizeObserver(fitCards);
+  for (const card of cards) resize.observe(card.querySelector('.case-head'));
+  document.fonts.ready.then(fitCards);
   const reset = () => {
     previous = 0;
     easedScroll = undefined;
@@ -110,6 +130,7 @@ export function setupWorkScroll() {
         card.querySelector('.story-frame').style.removeProperty('--stack-shade');
       });
     }
+    fitCards();
     requestPaint();
   };
   addEventListener('scroll', requestPaint, {passive: true});

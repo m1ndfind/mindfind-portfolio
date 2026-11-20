@@ -603,3 +603,58 @@ dialog::backdrop { background:rgba(4,5,5,.82); backdrop-filter:blur(6px); }
   .case-shot-main { flex:none; height:clamp(210px,63vw,360px); }
   .case-shot-main img { object-fit:cover; object-position:center top; }
 }
+
+/* Visual QA · cycle 1. A readable case hierarchy and complete device frames. */
+.case-info p { font-size:clamp(16px,1.12vw,19px); line-height:1.5 }
+.case-kicker { font-size:12px; line-height:1.45 }
+.case-head { align-items:start }
+.case-index { align-self:start; padding-top:8px }
+.case-info h3 { line-height:1.05 }
+.case-shot-small img { height:88%; max-width:82%; width:auto; left:57%; border-radius:12px; object-fit:contain }
+.case-shot .shot-mark { font-size:12px; background:#18201de8; padding:4px 6px; border-radius:4px; text-shadow:none }
+.case-shot::after { opacity:.45 }
+.case-bottom { font-size:12px; letter-spacing:.025em; line-height:1.4; flex-wrap:wrap }
+.service p { font-size:clamp(16px,1.25vw,20px); line-height:1.5 }
+@media(max-width:760px) {
+ .case-head { grid-template-columns:56px minmax(0,1fr); gap:10px }
+ .case-index { font-size:54px; padding-top:0 }
+ .case-info h3 { font-size:clamp(29px,7.2vw,44px) }
+ .case-kicker { font-size:12px; letter-spacing:0; margin-bottom:7px }
+ .case-info p { font-size:16px; line-height:1.5 }
+ .case-head .case-link { margin-top:7px }
+ .case-rail { height:clamp(170px,46vw,230px) }
+ .case-shot-small img { height:88%; border-width:2px }
+ .case-info .case-kicker { text-wrap:balance }
+ .case-shot .shot-mark { font-size:12px; left:5px; bottom:5px; padding:3px }
+ .case-bottom { font-size:12px; gap:5px; padding-top:13px }
+ .service p { padding-left:0; font-size:16px; max-width:48ch }
+ .service h3 .mono { min-width:64px; font-size:54px }
+}
+/* Visual QA · cycle 2. The articles share one stacking container. */
+.is-stacking .project { position:sticky; top:calc(var(--headroom,80px) + 14px); min-height:0; padding:0; }
+.is-stacking .project + .project { margin-top:clamp(70px,15svh,180px) }
+.is-stacking .story-pin { position:relative; top:auto }
+.is-stacking .case-gallery { height:clamp(300px,calc(100svh - var(--headroom,80px) - 260px),580px) }
+.is-stacking .project-list { padding-bottom:16svh }
+.is-stacking .story-frame { transform-origin:50% 0; }
+@media(prefers-reduced-motion:reduce) { .work-boundary .work-night { clip-path:none } }
+/* Visual QA · cycle 3. Dialog controls and motion preferences stay usable. */
+dialog .demo-canvas { height:min(610px,calc(100dvh - 220px)); min-height:160px }
+@media(max-width:480px) {
+ dialog .demo-canvas { height:calc(100dvh - 230px)!important; min-height:160px; max-height:610px!important }
+ .demo-tools { padding:8px 10px; gap:6px }
+ .demo-tools button { font-size:13px; min-height:44px }
+ .dialog-head { padding:10px 12px }
+ #full-demo { min-height:44px }
+}
+@media(prefers-reduced-motion:reduce) {
+ .about-reveal .revealed-word { opacity:1!important }
+ .case-gallery { rotate:none!important }
+}
+.is-stacking .case-gallery { height:var(--case-gallery-height,360px) }
+/* Keep the large stacked surfaces cached while their scale changes. */
+.is-stacking .story-frame { contain:layout paint; will-change:transform; box-shadow:0 12px 28px #0006 }
+.case-gallery { will-change:auto }
+@media(hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference) {
+ .case-gallery:hover { will-change:transform }
+}
