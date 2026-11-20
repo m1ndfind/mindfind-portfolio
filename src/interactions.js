@@ -1,0 +1,119 @@
+export function setupProjects() {
+  const dialog = document.querySelector('#project-dialog');
+  if (typeof dialog.showModal !== 'function') return;
+  const title = dialog.querySelector('h2');
+  const frame = dialog.querySelector('iframe');
+  const loading = dialog.querySelector('.demo-loading');
+  let opener;
+  const links = Array.from(document.querySelectorAll('[data-project]'));
+  const devices = dialog.querySelectorAll('[data-device]');
+  const canvas = dialog.querySelector('.demo-canvas');
+  let device = 'desktop';
+  let current = 0;
+
+  function displayProject(link) {
+    current = links.indexOf(link);
+    const name = link.closest('.project').querySelector('h3').textContent;
+    title.textContent = name;
+    frame.title = 'Интерактивное демо ' + name;
+    loading.textContent = 'Загружается демо…';
+    document.querySelector('#full-demo').href = link.href;
+    frame.src = link.href;
+  }
+
+  function fitDevice() {
+    if (!dialog.open || !canvas.clientWidth) return;
+    const width = device === 'desktop' ? 1280 : Math.min(canvas.clientWidth, 390);
+    const scale = Math.min(1, canvas.clientWidth / width);
+    const height = canvas.clientHeight / scale;
+    frame.style.setProperty('--device-width', width + 'px');
+    frame.style.setProperty('--device-scale', scale);
+    frame.style.setProperty('--device-height', height + 'px');
+  }
+  function selectDevice(value) {
+    device = value;
+    for (const button of devices) button.setAttribute('aria-pressed', String(button.dataset.device === device));
+    fitDevice();
+  }
+  new ResizeObserver(fitDevice).observe(canvas);
+  for (const button of devices) button.addEventListener('click', () => selectDevice(button.dataset.device));
+  dialog.querySelector('#next-project').addEventListener('click', () => {
+    displayProject(links[(current + 1) % links.length]);
+  });
+  for (const link of links) {
+    link.addEventListener('click', (event) => {
+      if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+      event.preventDefault();
+      opener = link;
+      displayProject(link);
+      dialog.showModal();
+      selectDevice(matchMedia('(max-width: 760px)').matches ? 'phone' : 'desktop');
+    });
+  }
+  // Every case shot opens the same working sandboxed demo as the top CTA.
+  for (const shot of document.querySelectorAll('.gallery-open')) {
+    shot.addEventListener('click', () => {
+      const link = shot.closest('.project')?.querySelector('[data-project]');
+      if (link) link.click();
+    });
+  }
+  frame.addEventListener('load', () => { loading.textContent = ''; });
+  dialog.querySelector('.dialog-close').addEventListener('click', () => dialog.close());
+  dialog.addEventListener('close', () => {
+    if (dialog.open) return;
+    loading.textContent = '';
+    frame.removeAttribute('src');
+    opener?.focus({ preventScroll: true, focusVisible: true });
+  });
+  dialog.addEventListener('click', (event) => {
+    if (event.target !== dialog) return;
+    const bounds = dialog.getBoundingClientRect();
+    if (event.clientX < bounds.left || event.clientX > bounds.right ||
+        event.clientY < bounds.top || event.clientY > bounds.bottom) dialog.close();
+  });
+  window.addEventListener('message', (event) => {
+    if (dialog.open && event.source === frame.contentWindow && event.data?.type === 'mindfind:close-demo') {
+      dialog.close();
+    }
+  });
+}
+
+export function setupBrief() {
+  const form = document.querySelector('#brief');
+  const status = document.querySelector('#status');
+  let revision = 0;
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const current = ++revision;
+    const data = new FormData(form);
+    const text = ['Заявка на сайт', 'Имя: ' + data.get('name'),
+      'Контакт: ' + data.get('contact'), 'Задача: ' + data.get('task')].join('\n');
+    try {
+      await navigator.clipboard.writeText(text);
+      if (revision !== current) return;
+      form.querySelector('.fallback-copy')?.remove();
+      status.textContent = 'Заявка скопирована.';
+    } catch {
+      if (revision !== current) return;
+      let field = form.querySelector('.fallback-copy');
+      if (!field) {
+        field = document.createElement('textarea');
+        field.className = 'fallback-copy';
+        field.setAttribute('aria-label', 'Текст заявки для ручного копирования');
+        field.rows = 5;
+        field.readOnly = true;
+        status.after(field);
+      }
+      field.value = text;
+      status.textContent = 'Скопируйте выделенный текст вручную.';
+      field.focus();
+      field.select();
+    }
+  });
+  form.addEventListener('input', () => {
+    revision++;
+    status.textContent = '';
+    form.querySelector('.fallback-copy')?.remove();
+  });
+  document.querySelector('#copy-brief').disabled = false;
+}

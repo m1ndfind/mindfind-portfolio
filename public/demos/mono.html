@@ -1,0 +1,37 @@
+<!doctype html><html lang="ru"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Mono Coffee — учебный концепт</title><style>*{box-sizing:border-box}body{margin:0;background:#ecd9bf;color:#573b2c;font:13px Arial,sans-serif}header{padding:22px 6%;display:flex;justify-content:space-between;font-size:10px;letter-spacing:1px}main{padding:35px 8%;position:relative;overflow:hidden}h1{font:clamp(35px,6vw,70px)/1 Georgia,serif;max-width:480px;letter-spacing:-2px;position:relative;z-index:1;margin:10px 0 20px}p{max-width:310px;font-size:12px;line-height:1.7;position:relative;z-index:1}button{border:0;border-radius:30px;padding:13px 20px;background:#573b2c;color:#ecd9bf;cursor:pointer;margin-top:8px}.shape{position:absolute;right:-15px;top:30px;width:230px;height:230px;background:radial-gradient(circle at 30% 25%,#ecd9bf,#bd9473 60%,#573b2c);border-radius:50%;opacity:.8;transform:rotate(-20deg)}#options{padding:20px 8%;display:none;border-top:1px solid #bd9473;gap:12px;flex-wrap:wrap}#options span{padding:12px 15px;background:#bd9473;border-radius:10px;font-size:11px}footer{font-size:9px;padding:10px 8%;opacity:.6}
+body{font-size:16px;line-height:1.6}
+header{gap:20px;flex-wrap:wrap;font-size:11px;line-height:1.5}
+h1{font-size:clamp(36px,6vw,70px);line-height:1.08;letter-spacing:-1px;text-wrap:balance}
+p{font-size:16px;max-width:360px;line-height:1.7}
+button{position:relative;z-index:1;font:inherit;font-size:14px;min-height:44px;touch-action:manipulation;max-width:100%}
+button:hover{filter:brightness(1.12)}
+button:focus-visible{outline:3px solid currentColor;outline-offset:4px}
+#options span{font-size:14px;line-height:1.5}
+footer{font-size:12px;line-height:1.6;opacity:1;padding-top:20px;padding-bottom:20px}
+.shape{pointer-events:none}
+@media(max-width:480px){main{padding:24px 8%}.shape{width:180px;height:180px;right:-65px;opacity:.25}h1{max-width:100%}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+#options{display:block;padding:22px 8%}#options[hidden]{display:none}#options h2{font:30px Georgia,serif;margin:0 0 14px}select,input:not([type=radio]){display:block;border:1px solid currentColor;border-radius:3px;background:transparent;color:inherit;font:inherit;padding:9px;width:min(100%,320px)}fieldset{border:0;padding:0}fieldset label{display:inline-flex;align-items:center;min-height:44px;padding-right:10px}form label{display:block;margin-bottom:12px}#draft{border-top:1px solid;margin-top:20px;overflow-wrap:anywhere}#drinks{padding-left:20px}</style><header><b>MONO COFFEE</b><span>ДЕМО / 2026</span></header><main><div class="shape"></div><h1>Город подождёт. Кофе — нет.</h1><p>Небольшая пауза для большого дня. Выберите напиток под настроение.</p><button id="explore" aria-controls="options" aria-expanded="false">Посмотреть меню</button></main><section id="options" hidden><h2>Меню</h2><fieldset><legend>Категория</legend><label><input type="radio" name="menu" value="coffee" checked> Кофе</label> <label><input type="radio" name="menu" value="other"> Без кофе</label></fieldset>
+<ul id="drinks" aria-live="polite"><li>Эспрессо · 180 ₽</li><li>Капучино · 260 ₽</li></ul></section><footer>Учебный концепт Mindfind. Цены демонстрационные.</footer>
+<script>
+const explore = document.querySelector('#explore');
+const options = document.querySelector('#options');
+explore.addEventListener('click', () => {
+  options.hidden = !options.hidden;
+  explore.setAttribute('aria-expanded', String(!options.hidden));
+  if (!options.hidden) options.scrollIntoView({block:'nearest'});
+});
+document.addEventListener('keydown', event => {
+  if (event.key !== 'Escape' || parent === window) return;
+  event.preventDefault();
+  parent.postMessage({type:'mindfind:close-demo'}, '*');
+});
+document.querySelector('fieldset').addEventListener('change', event => {
+  const drinks = event.target.value === 'coffee' ? ['Эспрессо · 180 ₽', 'Капучино · 260 ₽'] : ['Матча · 290 ₽'];
+  document.querySelector('#drinks').replaceChildren(...drinks.map(name => {
+    const item = document.createElement('li');
+    item.textContent = name;
+    return item;
+  }));
+});
+</script></html>
