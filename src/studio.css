@@ -56,8 +56,6 @@
 }
 .studio-cinema>.studio-anchor {scroll-margin-top:-95px}
 .studio-brief form {margin-top:0;border-radius:16px}
-.studio-art.baked canvas {animation:studio-breathe 5s ease-in-out infinite alternate;transform-origin:50% 74%}
-@keyframes studio-breathe {to{transform:rotate(.22deg) scaleY(1.004)}}
 @media(prefers-reduced-motion:reduce){.studio-art.baked canvas{animation:none}.studio-art canvas{visibility:hidden}.studio-art.live .studio-still{visibility:visible}}
 .studio-cinema .studio-art,.studio-cinema .studio-act {contain:layout paint;will-change:transform,opacity}
 .studio-cinema .studio-act{padding:6px;margin:-6px}

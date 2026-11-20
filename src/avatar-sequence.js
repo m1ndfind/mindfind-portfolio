@@ -16,8 +16,8 @@ export function mountSequence(art, wake) {
     cache.set(index,image);
     image.decode().then(wake,()=>{});
   }
-  return progress=>{
-    const position=Math.round(progress*300)/10;
+  return (progress, deltaTime, settled)=>{
+    const position=settled ? Math.round(progress*30) : Math.round(progress*300)/10;
     const lo=Math.floor(position), hi=Math.ceil(position);
     for (const key of cache.keys()) if (Math.abs(key-position)>3) cache.delete(key);
     for (const key of [lo,hi,lo-1,hi+1]) if (key>=0 && key<=30) request(key);

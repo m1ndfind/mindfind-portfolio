@@ -111,7 +111,7 @@ export function setupStudio() {
       });
       painted=p;
     }
-    if (artVisible && renderAvatar && !reduced.matches) renderAvatar(p,dt);
+    if (artVisible && renderAvatar && !reduced.matches) renderAvatar(p,dt,p===target);
     if (visible && cinematic && p!==target || artVisible && renderAvatar && !reduced.matches && (!baked || p!==target)) schedule();
     else last=0;
   }
