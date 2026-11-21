@@ -6,7 +6,14 @@ import {mergeGeometries,mergeVertices} from 'three/addons/utils/BufferGeometryUt
 import {execFileSync} from 'node:child_process';
 import {readFile, writeFile} from 'node:fs/promises';
 const scene=new T.Scene(),scale=.0021, tau=2*Math.PI;
-const world=([x,y,z])=>new T.Vector3((x-540)*scale,(1318-y)*scale,z*scale);
+// Keep the original garment UVs while sculpting the vinyl casting in world space.
+function world([x,y,z]){
+ const t=Math.min(1,Math.max(0,(575-y)/42));
+ const head=t*t*(3-2*t);
+ const width=1+.25*head;
+ const height=(1318-y)*.88+Math.max(0,545-y)*.29;
+ return new T.Vector3((x-540)*width*scale,height*scale,z*(1+.19*head)*scale);
+}
 const bones=[], names={}, anchors=[];
 function bone(name,anchor,parent){
  const b=new T.Bone(); b.name=name;
@@ -17,6 +24,9 @@ function bone(name,anchor,parent){
 bone('Hips',[540,802,0]);bone('Chest',[540,759,0],'Hips');bone('Neck',[537,565,0],'Chest');bone('Head',[536,531,0],'Neck');
 for(const s of [-1,1]){
  const side=s<0?'L':'R';
+ bone('Thigh'+side,[539+s*72,859,0],'Hips');
+ bone('Knee'+side,[539+s*101,1040,2],'Thigh'+side);
+ bone('Foot'+side,[539+s*112,1250,10],'Knee'+side);
  bone('Shoulder'+side,[540+s*145,592,0],'Chest');
  bone('Elbow'+side,[540+s*184,694,6],'Shoulder'+side);
  bone('Hand'+side,[540+s*204,804,36],'Elbow'+side);
@@ -25,12 +35,18 @@ const mats={},batches=new Map();
 function material(name,color,roughness,metalness=0,photo=false){
  const m=new T.MeshStandardMaterial({color,roughness,metalness});m.name=name;m.userData.plate=photo;mats[name]=m;return m;
 }
-const skin=material('Apricot porcelain skin',0xe2a077,.67),mouth=material('Warm lip crease',0x713e31,.74),hair=material('Soft black hair',0x201b1a,.45),ridge=material('Hair ridges',0x302a27,.53);
-const cap=material('Cotton twill',0xffffff,.9,0,true),rib=material('Ribbed jersey',0xffffff,.92,0,true),jeans=material('Indigo black denim',0xffffff,.93,0,true),visor=material('Smoke glass',0xc1c3c4,.19,.09,true),leather=material('Black leather',0x211e20,.52),rubber=material('Rubber',0x282426,.84),silver=material('Pewter',0xbfc2c3,.24,.58),stitch=material('Faded thread',0x76695d,.93),black=material('Black binding',0x1b1819,.62),ivory=material('Embroidery',0xf3eee5,.79);
+const skin=material('Satin apricot vinyl',0xe2a077,.49),mouth=material('Warm lip crease',0x713e31,.74),hair=material('Soft black hair',0x201b1a,.52),ridge=material('Hair ridges',0x302a27,.53);
+const cap=material('Cotton twill',0xffffff,.9,0,true),rib=material('Ribbed jersey',0xffffff,.92,0,true),jeans=material('Indigo black denim',0xffffff,.93,0,true),visor=material('Smoke glass',0xc1c3c4,.26,.09,true),leather=material('Black leather',0x211e20,.52),rubber=material('Rubber',0x282426,.84),silver=material('Pewter',0xbfc2c3,.24,.58),stitch=material('Faded thread',0x76695d,.93),black=material('Black binding',0x1b1819,.62),ivory=material('Embroidery',0xf3eee5,.79);
 const clothBack=new Map([[cap,material('Twill side panels',0x312c2b,.91)],[jeans,material('Denim reverse',0x302b2a,.94)],[rib,material('Jersey back',0x231f20,.93)]]);
 const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
 const signed=(v,p)=>Math.sign(v)*Math.pow(Math.abs(v),p);
 function weights(joint,y){
+ if(typeof joint==='string' && joint.startsWith('Leg')){
+  const side=joint.at(-1);
+  const thigh=clamp((y-827)/83),knee=clamp((y-985)/105),foot=clamp((y-1194)/74);
+  return [[names.Hips,names['Thigh'+side],names['Knee'+side],names['Foot'+side]],
+          [1-thigh,thigh-knee,knee-foot,foot]];
+ }
  if(Array.isArray(joint)){
   const [shoulder,elbow,wrist]=joint;
   const e=clamp((y-661)/67),w=clamp((y-779)/43);
@@ -109,7 +125,7 @@ function loop(m,b,x,y,z,a,h,r,tilt=0){
 }
 const H='Head',C='Chest',P='Hips';
 // Rounded chin, long cheek planes and full occiput.
-form(skin,H,[[185,538,-5,12,12],[228,538,-6,150,133],[286,537,-3,183,151],[376,536,2,190,156],[453,535,3,183,151],[497,536,8,172,143],[527,536,12,151,126],[541,537,13,112,95],[546,538,5,10,12]],{e:.46});
+form(skin,H,[[185,538,-5,12,12],[228,538,-6,150,133],[286,537,-3,183,151],[376,536,2,190,156],[453,535,3,183,151],[497,536,8,172,143],[527,536,12,151,126],[541,537,13,112,95],[546,538,5,10,12]],{e:.57,n:72,r:46});
 oval(skin,'Neck',535,555,0,61,75,61);
 for(const s of [-1,1]){oval(skin,H,536+s*187,416,4,28,48,28);oval(mouth,H,536+s*202,419,11,9,23,10);}
 form(skin,H,[[390,529,151,5,5],[408,529,157,15,17],[426,529,170,24,25],[440,529,168,22,20],[450,529,157,10,9]],{e:.85,n:36,r:18});
@@ -117,12 +133,12 @@ line(mouth,H,[[488,475,156],[501,481,157],[528,486,157],[551,484,157],[569,478,1
 // Layered hair is swept along curved spines. The width and depth taper separately.
 function lock(points,width,depth,azimuth){
  const curve=new T.CatmullRomCurve3(points.map(p=>new T.Vector3(...p)));
- grid(hair,H,20,22,(u,v)=>{
+ grid(hair,H,26,30,(u,v)=>{
  const p=curve.getPoint(v),t=u*tau,tangent=curve.getTangent(v);
  const outward=new T.Vector3(Math.sin(azimuth),0,Math.cos(azimuth));
  const along=new T.Vector3().crossVectors(tangent,outward).normalize();
  const normal=new T.Vector3().crossVectors(along,tangent).normalize();
- const taper=Math.pow(Math.sin(Math.PI*(.09+.91*v)),.72);
+ const taper=Math.pow(Math.sin(Math.PI*(.09+.91*v)),.92);
  const groove=.93+.07*Math.cos(t*5+.5*v);
  p.addScaledVector(along,width*taper*Math.cos(t));
  p.addScaledVector(normal,depth*taper*Math.sin(t)*groove);
@@ -139,7 +155,7 @@ for(let i=0;i<19;i++){
 }
 for(const s of [-1,1]){
  for(const [start,end,height,width] of [[142,276,335,36],[163,254,394,35],[165,264,432,33],[154,226,484,29]]){
-  lock([[536+s*start,height-106,72],[536+s*(start+23),height-57,90],[536+s*(end-30),height+4,81],[536+s*end,height-6,68]],width,16,s*.82);
+  lock([[536+s*start,height-106,72],[536+s*(start+23),height-57,90],[536+s*(end-30),height+5,81],[536+s*(end+7),height-17,69]],width,16,s*.82);
  }
  lock([[536+s*158,277,109],[536+s*173,323,121],[536+s*177,390,108],[536+s*168,451,88]],22,14,s*.85);
 }
@@ -169,7 +185,7 @@ grid(visor,H,64,14,glass,(x,y)=>[clamp(x,357,710),clamp(y,329,428)]);visor.side=
 const edge=[];for(let i=0;i<=48;i++)edge.push(glass(i/48,0));for(let i=48;i>=0;i--)edge.push(glass(i/48,1));edge.push(edge[0]);line(black,H,edge,6);
 for(const s of [-1,1])line(black,H,[[534+s*178,342,120],[534+s*192,345,94],[534+s*195,365,17],[534+s*194,382,-26]],7);
 // Torso and tank share a shaped neckline. The shoulders bridge over the back.
-form(skin,C,[[551,537,0,49,46],[563,537,0,117,58],[579,537,0,151,60],[605,537,0,139,67],[674,537,0,132,73],[768,537,0,108,68]],{e:.82});
+form(skin,C,[[551,537,0,49,46],[563,537,0,117,58],[579,537,0,151,60],[605,537,0,145,64],[674,537,0,115,64],[768,537,0,106,62]],{e:.82});
 function neckline(t){return 560+61*Math.max(0,Math.cos(t))**6+22*Math.max(0,-Math.cos(t))**5+92*Math.abs(Math.sin(t))**10;}
 grid(rib,C,64,30,(u,v)=>{
  const t=tau*u,y=neckline(t)*(1-v)+791*v;
@@ -180,17 +196,17 @@ line(black,C,Array.from({length:65},(_,i)=>{const t=tau*i/64;return [538+122*sig
 for(const s of [-1,1]){
  const side=s<0?'L':'R',arm=['Shoulder'+side,'Elbow'+side,'Hand'+side],hand=arm[2];
  const X=n=>538+s*n;
- form(skin,arm,[[565,X(142),0,7,8],[581,X(153),0,31,39],[612,X(165),0,44,48],[641,X(172),3,44,48],[670,X(179),5,39,39],[689,X(185),10,39,40],[714,X(191),17,44,44],[750,X(200),23,43,43],[790,X(204),38,36,35],[822,X(205),43,34,33]],{e:.93,n:38,r:34});
+ form(skin,arm,[[562,X(125),0,14,13],[581,X(147),0,38,40],[612,X(165),0,44,48],[641,X(172),3,44,48],[670,X(179),5,39,39],[689,X(185),10,39,40],[714,X(191),17,44,44],[750,X(200),23,43,43],[790,X(204),38,36,35],[822,X(205),43,34,33]],{e:.93,n:38,r:34});
  form(skin,hand,[[805,X(205),43,29,28],[829,X(204),45,40,34],[857,X(202),49,46,35],[883,X(201),54,44,32],[904,X(196),58,35,26],[921,X(192),58,19,17]],{e:.78});
  for(let j=0;j<4;j++){const dx=176+j*13;form(skin,hand,[[867,X(dx),66,9,12],[886,X(dx+6),76,12,14],[905,X(dx+2),82,12,12],[919-j*2,X(dx-8),85,10,10],[932-j*3,X(dx-16),82,3,4]],{n:20,r:16});}
  form(skin,hand,[[843,X(176),63,14,14],[858,X(163),76,17,17],[877,X(155),83,13,14],[893,X(154),84,7,8]],{n:24,r:16});
  for(const [yy,hh,m] of (s<0?[[760,14,silver],[787,20,leather],[808,5,silver]]:[[779,26,leather]])){
- form(m,hand,[[yy-hh/2,X(204),36,39,38],[yy-hh/2+2,X(204),36,44,42],[yy+hh/2-2,X(204),36,44,42],[yy+hh/2,X(204),36,39,38]],{n:36,r:8});
+ form(m,arm,[[yy-hh/2,X(204),36,39,38],[yy-hh/2+2,X(204),36,44,42],[yy+hh/2-2,X(204),36,44,42],[yy+hh/2,X(204),36,39,38]],{n:36,r:8});
  }
- if(s>0){oval(silver,hand,X(212),787,78,26,29,9);oval(black,hand,X(212),787,86,21,24,4);
- for(let i=0;i<12;i++){const t=tau*i/12;line(ivory,hand,[[X(212)+17*Math.sin(t),787+19*Math.cos(t),91],[X(212)+15*Math.sin(t),787+16*Math.cos(t),91]],1);}
- line(silver,hand,[[X(202),778,92],[X(212),787,93],[X(222),783,92]],1.5);}
- else for(const dx of [-25,0,25])oval(silver,hand,X(204)+dx,789,72,4,4,4);
+ if(s>0){oval(silver,arm,X(212),787,78,26,29,9);oval(black,arm,X(212),787,86,21,24,4);
+ for(let i=0;i<12;i++){const t=tau*i/12;line(ivory,arm,[[X(212)+17*Math.sin(t),787+19*Math.cos(t),91],[X(212)+15*Math.sin(t),787+16*Math.cos(t),91]],1);}
+ line(silver,arm,[[X(202),778,92],[X(212),787,93],[X(222),783,92]],1.5);}
+ else for(const dx of [-25,0,25])oval(silver,arm,X(204)+dx,789,72,4,4,4);
  loop(silver,hand,X(203),890,84,12,6,3,.32);
 }
 // Inset UV boundaries follow the flared outline, keeping studio background
@@ -208,22 +224,25 @@ function denimFront(x,y,s){
 form(jeans,P,[[790,539,0,106,73],[810,538,0,129,81],[863,539,0,142,88],[906,539,-6,138,78],[948,539,-13,94,61]],{uv:(x,y,z)=>z>20?[x,y]:[478+.18*(x-539),920+.2*(y-840)]});
 for(const s of [-1,1]){
  const cx=539+s*112;
+ const leg=s<0?'LegL':'LegR',foot=s<0?'FootL':'FootR';
  const rows=[[822,539+s*62,0,60,66],[884,539+s*77,2,78,78],[961,539+s*90,0,90,84],[1016,539+s*99,7,103,90],[1056,539+s*103,6,105,87],[1103,539+s*104,-2,99,76],[1137,539+s*115,1,116,86],[1160,539+s*113,6,118,91],[1186,539+s*113,0,104,77],[1214,cx,-4,106,87],[1245,cx,1,116,94],[1261,cx,1,111,91],[1273,cx,2,101,86]];
- form(jeans,P,rows,{n:60,r:61,e:.76,warp:([x,y,z],t,v)=>{
+ form(jeans,leg,rows,{n:60,r:61,e:.76,warp:([x,y,z],t,v)=>{
  const lower=clamp((y-1050)/120),dx=(x-cx)/115;
  return [x+3*Math.sin(t*3+v*10),y+lower*(14*Math.sin(2*t+v*15)+12*dx*s),z+lower*8*Math.sin(2*t+v*21)];
  },uv:(x,y,z)=>z>20?denimFront(x,y,s):[468+18*Math.sin((x-cx)/80),947+16*Math.sin(y/50)]});
  // Stitched, five-sided rear pockets lie against the seat.
  const px=539+s*77;
- line(stitch,P,[[px-43,852,-67],[px-37,917,-78],[px,935,-81],[px+41,914,-74],[px+43,850,-66]],1.5);
+ line(stitch,leg,[[px-43,852,-67],[px-37,917,-78],[px,935,-81],[px+41,914,-74],[px+43,850,-66]],1.5);
  for(let j=0;j<5;j++){const y=1027+j*5+(s>0?7:0);const pts=[];
  for(let i=0;i<9;i++){const u=i/8,x=cx+(u-.5)*(91-7*j);pts.push([x,y+4*Math.sin(Math.PI*u),6+91*Math.sqrt(1-((x-cx)/110)**2)]);}
- line(j%2?stitch:ivory,P,pts,1.1);}
- form(rubber,P,[[1266,cx,27,96,109],[1284,cx,34,102,126],[1308,cx,34,103,126],[1316,cx,34,94,120]],{e:.55});
- line(black,P,Array.from({length:45},(_,i)=>{
+ line(j%2?stitch:ivory,leg,pts,1.1);}
+ form(rubber,foot,[[1266,cx,27,96,109],[1284,cx,34,102,126],[1308,cx,34,103,126],[1316,cx,34,94,120]],{e:.55});
+ line(black,foot,Array.from({length:45},(_,i)=>{
  const a=tau*i/44;return [cx+101*signed(Math.sin(a),.6),1290,34+124*signed(Math.cos(a),.6)];
  }),1.8);
- form(leather,P,[[1202,cx,22,48,54],[1221,cx,27,79,86],[1247,cx,33,94,110],[1278,cx,35,99,121],[1290,cx,35,99,122]],{e:.65});
+ // A low welt separates the rubber outsole from the domed leather toe.
+ form(rubber,foot,[[1286,cx,35,99,124],[1289,cx,35,104,128],[1294,cx,35,104,128],[1298,cx,35,101,126]],{e:.59,r:8});
+ form(leather,foot,[[1202,cx,22,48,54],[1221,cx,27,79,86],[1247,cx,33,94,110],[1278,cx,35,99,121],[1290,cx,35,99,122]],{e:.65});
 }
 form(leather,P,[[785,538,0,116,76],[793,538,0,126,84],[819,538,0,129,84],[826,538,0,125,81]],{e:.63,n:56});
 line(silver,P,[[513,793,86],[556,793,86],[560,796,86],[558,826,86],[553,829,86],[510,827,86],[508,822,86],[509,798,86],[513,793,86]],3.5);
@@ -256,6 +275,11 @@ animate('Head',t=>[.025*Math.sin(2*t+.4),.095*Math.sin(t)+.039*Math.sin(2*t-.3),
 for(const [i,s] of ['L','R'].entries()){
  const a=i?1:-1;animate('Shoulder'+s,t=>[-.034+.024*Math.sin(2*t+.8*a),0,a*.022*Math.cos(t)]);
  animate('Elbow'+s,t=>[-.065+.033*Math.cos(t+.8*a),a*.02*Math.sin(2*t),0]);
+ // Thigh and shin counter-rotate to settle the stance; the soles stay nearly level.
+ const settle=t=>(1-Math.cos(t+.85*a))*.5;
+ animate('Thigh'+s,t=>[-.032*settle(t),0,a*.013*settle(t)]);
+ animate('Knee'+s,t=>[.070*settle(t),0,0]);
+ animate('Foot'+s,t=>[-.038*settle(t),0,-a*.013*settle(t)]);
  animate('Hand'+s,t=>[.029*Math.sin(2*t+a),a*.037*Math.cos(t),a*.023*Math.sin(t)]);
 }
 const times=[],values=[];for(let i=0;i<=steps;i++){const t=i*tau/steps,p=bones[names.Chest].position;
