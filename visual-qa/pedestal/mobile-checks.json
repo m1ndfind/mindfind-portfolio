@@ -1,0 +1,278 @@
+[
+  {
+    "w": 360,
+    "id": "services",
+    "host": "studio-art live",
+    "p": 0,
+    "margin": 0.03302837702560263,
+    "calls": 43,
+    "error": 0,
+    "root": [
+      0,
+      0,
+      0,
+      1
+    ],
+    "head": [
+      0.005527607748463249,
+      -0.017105492331500428,
+      0.013927462947510518,
+      0.9997414032941326
+    ],
+    "gl": "ANGLE (Intel, Mesa Intel(R) UHD Graphics (CML GT2), OpenGL ES 3.2)",
+    "overflow": 0
+  },
+  {
+    "w": 360,
+    "id": "about",
+    "host": "studio-art live",
+    "p": 0.7214065356489945,
+    "margin": 0.03287492684463972,
+    "calls": 43,
+    "error": 0,
+    "root": [
+      0,
+      0,
+      0,
+      1
+    ],
+    "head": [
+      0.014024628927401226,
+      0.06717225559466933,
+      0.024139381629025472,
+      0.9973507347550015
+    ],
+    "gl": "ANGLE (Intel, Mesa Intel(R) UHD Graphics (CML GT2), OpenGL ES 3.2)",
+    "overflow": 0
+  },
+  {
+    "w": 360,
+    "id": "contact",
+    "host": "studio-art live",
+    "p": 1,
+    "margin": 0.03911060401971733,
+    "calls": 43,
+    "error": 0,
+    "root": [
+      0,
+      0,
+      0,
+      1
+    ],
+    "head": [
+      0.004254666621929382,
+      0.04776707108974506,
+      -0.0035702270334296905,
+      0.9988430598499312
+    ],
+    "gl": "ANGLE (Intel, Mesa Intel(R) UHD Graphics (CML GT2), OpenGL ES 3.2)",
+    "overflow": 0
+  },
+  {
+    "w": 360,
+    "id": "start-project",
+    "host": "brief-poster live",
+    "p": 1,
+    "margin": 0.03911060401971733,
+    "calls": 45,
+    "error": 0,
+    "root": [
+      0,
+      0,
+      0,
+      1
+    ],
+    "head": [
+      -0.03494736494115858,
+      0.08360452840492436,
+      -0.032933020327571075,
+      0.9953413387808041
+    ],
+    "gl": "ANGLE (Intel, Mesa Intel(R) UHD Graphics (CML GT2), OpenGL ES 3.2)",
+    "overflow": 0
+  },
+  {
+    "w": 390,
+    "id": "services",
+    "host": "studio-art live",
+    "p": 0,
+    "margin": 0.03302837702560263,
+    "calls": 43,
+    "error": 0,
+    "root": [
+      0,
+      0,
+      0,
+      1
+    ],
+    "head": [
+      -0.012415080201593499,
+      0.0056260245701211286,
+      -0.016821973182234023,
+      0.9997655899506547
+    ],
+    "gl": "ANGLE (Intel, Mesa Intel(R) UHD Graphics (CML GT2), OpenGL ES 3.2)",
+    "overflow": 0
+  },
+  {
+    "w": 390,
+    "id": "about",
+    "host": "studio-art live",
+    "p": 0.7141561329588015,
+    "margin": 0.03274476741196003,
+    "calls": 43,
+    "error": 0,
+    "root": [
+      0,
+      0,
+      0,
+      1
+    ],
+    "head": [
+      -0.0036483821703880005,
+      0.019884506420630423,
+      -0.001957236612238621,
+      0.9997937111908589
+    ],
+    "gl": "ANGLE (Intel, Mesa Intel(R) UHD Graphics (CML GT2), OpenGL ES 3.2)",
+    "overflow": 0
+  },
+  {
+    "w": 390,
+    "id": "contact",
+    "host": "studio-art live",
+    "p": 1,
+    "margin": 0.03911060401971733,
+    "calls": 43,
+    "error": 0,
+    "root": [
+      0,
+      0,
+      0,
+      1
+    ],
+    "head": [
+      0.015789823211984667,
+      -0.08487717116635364,
+      -0.02515459832467297,
+      0.9959486901848187
+    ],
+    "gl": "ANGLE (Intel, Mesa Intel(R) UHD Graphics (CML GT2), OpenGL ES 3.2)",
+    "overflow": 0
+  },
+  {
+    "w": 390,
+    "id": "start-project",
+    "host": "brief-poster live",
+    "p": 1,
+    "margin": 0.03911060401971733,
+    "calls": 45,
+    "error": 0,
+    "root": [
+      0,
+      0,
+      0,
+      1
+    ],
+    "head": [
+      -0.013839373265502549,
+      0.02397324251582319,
+      -0.0226530328473109,
+      0.9993600930063768
+    ],
+    "gl": "ANGLE (Intel, Mesa Intel(R) UHD Graphics (CML GT2), OpenGL ES 3.2)",
+    "overflow": 0
+  },
+  {
+    "w": 768,
+    "id": "services",
+    "host": "studio-art live",
+    "p": 0,
+    "margin": 0.03302837702560263,
+    "calls": 43,
+    "error": 0,
+    "root": [
+      0,
+      0,
+      0,
+      1
+    ],
+    "head": [
+      -0.014366616204947634,
+      0.014033400123205255,
+      0.026898590142960258,
+      0.9994364061150278
+    ],
+    "gl": "ANGLE (Intel, Mesa Intel(R) UHD Graphics (CML GT2), OpenGL ES 3.2)",
+    "overflow": 0
+  },
+  {
+    "w": 768,
+    "id": "about",
+    "host": "studio-art live",
+    "p": 0.7498297518159807,
+    "margin": 0.03340707093615236,
+    "calls": 43,
+    "error": 0,
+    "root": [
+      0,
+      0,
+      0,
+      1
+    ],
+    "head": [
+      -0.009893087991323471,
+      -0.026361864089698702,
+      0.028158483804359466,
+      0.9992068247973247
+    ],
+    "gl": "ANGLE (Intel, Mesa Intel(R) UHD Graphics (CML GT2), OpenGL ES 3.2)",
+    "overflow": 0
+  },
+  {
+    "w": 768,
+    "id": "contact",
+    "host": "studio-art live",
+    "p": 1,
+    "margin": 0.03911060401971733,
+    "calls": 43,
+    "error": 0,
+    "root": [
+      0,
+      0,
+      0,
+      1
+    ],
+    "head": [
+      -0.012687761183115653,
+      -0.06543459557113529,
+      0.017886784977779947,
+      0.9976158566010069
+    ],
+    "gl": "ANGLE (Intel, Mesa Intel(R) UHD Graphics (CML GT2), OpenGL ES 3.2)",
+    "overflow": 0
+  },
+  {
+    "w": 768,
+    "id": "start-project",
+    "host": "brief-poster live",
+    "p": 1,
+    "margin": 0.03911060401971733,
+    "calls": 45,
+    "error": 0,
+    "root": [
+      0,
+      0,
+      0,
+      1
+    ],
+    "head": [
+      -0.02664555133327407,
+      0.0070911233205940135,
+      -0.0018705306494413657,
+      0.9996180428940283
+    ],
+    "gl": "ANGLE (Intel, Mesa Intel(R) UHD Graphics (CML GT2), OpenGL ES 3.2)",
+    "overflow": 0
+  }
+]

@@ -83,20 +83,38 @@ export function setupProjects() {
 export function setupBrief() {
   const form = document.querySelector('#brief');
   const status = document.querySelector('#status');
+  const button=form.querySelector('#copy-brief');
+  const fields=Array.from(form.querySelectorAll('[required]'));
+  const errors={name:'Введите ваше имя.',contact:'Укажите Telegram или email для ответа.',task:'Кратко опишите задачу.'};
+  form.noValidate=true;
+  function validate(field){
+    const valid=Boolean(field.value.trim());
+    field.setAttribute('aria-invalid',String(!valid));
+    document.getElementById(field.name+'-error').textContent=valid?'':errors[field.name];
+    return valid;
+  }
   let revision = 0;
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
     const current = ++revision;
+    const invalid=fields.filter(field=>!validate(field));
+    if(invalid.length){invalid[0].focus();return;}
     const data = new FormData(form);
+    for(const field of fields)data.set(field.name,field.value.trim());
     const text = ['Заявка на сайт', 'Имя: ' + data.get('name'),
       'Контакт: ' + data.get('contact'), 'Задача: ' + data.get('task')].join('\n');
     try {
       await navigator.clipboard.writeText(text);
       if (revision !== current) return;
       form.querySelector('.fallback-copy')?.remove();
-      status.textContent = 'Заявка скопирована.';
+      button.dataset.copied='';
+      button.querySelector('span').textContent='Заявка скопирована';
+      button.querySelector('b').textContent='✓';
+      status.textContent='Заявка скопирована. Теперь вы можете вставить текст в сообщение и отправить его самостоятельно.';
+      form.dispatchEvent(new Event('brief-copied',{bubbles:true}));
     } catch {
       if (revision !== current) return;
+      resetButton();
       let field = form.querySelector('.fallback-copy');
       if (!field) {
         field = document.createElement('textarea');
@@ -112,7 +130,14 @@ export function setupBrief() {
       field.select();
     }
   });
-  form.addEventListener('input', () => {
+  function resetButton(){
+    delete button.dataset.copied;
+    button.querySelector('span').textContent='Скопировать заявку';
+    button.querySelector('b').textContent='↗';
+  }
+  form.addEventListener('input', event => {
+    if(event.target.getAttribute('aria-invalid')==='true')validate(event.target);
+    resetButton();
     revision++;
     status.textContent = '';
     form.querySelector('.fallback-copy')?.remove();

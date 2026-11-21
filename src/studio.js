@@ -8,6 +8,12 @@ export function setupStudio() {
   const story=document.querySelector('#mindfind-story');
   const stage=story.querySelector('.studio-stage');
   const art=stage.querySelector('figure');
+  const poster=document.querySelector('.brief-poster');
+  const brief=poster.closest('.studio-brief');
+  const mini=brief.querySelector('.brief-mini');
+  let host=art;
+  const canvas=art.querySelector('canvas');
+  let posterVisible=false,inFinale=false,pending='',inAbout=false;
   const acts=[...stage.querySelectorAll('article')];
   const progressBar=stage.querySelector('.studio-meter i');
   const anchors=acts.map(act=>act.querySelector('.studio-anchor'));
@@ -59,6 +65,20 @@ export function setupStudio() {
   }
   function measure() {
     const top=story.getBoundingClientRect().top;
+    const briefTop=brief.getBoundingClientRect().top;
+    const exit=ease(.02,.85,1-briefTop/innerHeight);
+    stage.style.setProperty('--studio-exit',exit);
+    const formBounds=brief.querySelector('form').getBoundingClientRect();
+    const useMini=innerWidth<=850 && formBounds.top<Math.min(300,innerHeight*.46) && formBounds.bottom>96;
+    const dock=useMini || posterVisible && briefTop<innerHeight*(inFinale?.70:.62);
+    const nextHost=useMini?mini:dock?poster:art;
+    if(nextHost!==host){
+      if(dock && !inFinale)react('welcome');
+      inFinale=dock;
+      host=nextHost;
+      mini.classList.toggle('active',useMini);
+      if(!baked && renderAvatar)moveCanvas();
+    }
     const reveal=ease(.12,.86,1-top/innerHeight);
     if (arrival!==reveal) painted=NaN;
     arrival=reveal;
@@ -70,8 +90,37 @@ export function setupStudio() {
       trigger.inert=!compact;
     }
     target=clamp(-top/Math.max(1,story.offsetHeight-innerHeight));
+    if(host===mini && !loading)loadFigure();
     schedule();
   }
+  function react(name){
+    pending=name;
+    schedule();
+  }
+  function moveCanvas(){
+    art.classList.remove('live');
+    poster.classList.remove('live');
+    art.querySelector('.studio-still').src='assets/studio/'+Math.round(p*30)+'.webp';
+    mini.classList.remove('live');
+    host.append(canvas);
+  }
+  brief.addEventListener('focusin',e=>{
+    if(e.target.matches('input,textarea'))react(e.target.name==='name'?'listen':'turn');
+    if(e.target.id==='copy-brief')react('point');
+  });
+  brief.querySelector('#copy-brief').addEventListener('pointerenter',e=>{if(e.pointerType==='mouse')react('point');});
+  brief.addEventListener('brief-copied',()=>react('approve'));
+  const entrance=new IntersectionObserver(entries=>{
+    for(const entry of entries)if(entry.isIntersecting){
+      entry.target.classList.add('arrived');
+      entrance.unobserve(entry.target);
+    }
+  });
+  entrance.observe(brief);
+  entrance.observe(brief.querySelector('form'));
+  new IntersectionObserver(([entry])=>{
+    posterVisible=entry.isIntersecting;measure();loadFigure();
+  }).observe(poster);
   function schedule() {
     if (!frame && !document.hidden) frame=requestAnimationFrame(update);
   }
@@ -114,18 +163,26 @@ export function setupStudio() {
       });
       painted=p;
     }
-    if (artVisible && renderAvatar && !reduced.matches) renderAvatar(p,dt,p===target);
-    if (visible && cinematic && p!==target || artVisible && renderAvatar && !reduced.matches && (!baked || p!==target)) schedule();
+    const about=p>.38 && p<.60;
+    if(about && !inAbout && !inFinale)react('present');
+    inAbout=about;
+    const drawing=inFinale ? (posterVisible || host===mini) && !baked : artVisible;
+    if(drawing && renderAvatar && !reduced.matches){
+      if(pending){renderAvatar.react?.(pending);pending='';}
+      renderAvatar(p,dt,p===target,inFinale);
+    }
+    if (visible && cinematic && p!==target || drawing && renderAvatar && !reduced.matches && (!baked || p!==target)) schedule();
     else last=0;
   }
   new IntersectionObserver(([entry])=>{visible=entry.isIntersecting;schedule();}).observe(story);
   async function loadFigure() {
-    if (!artVisible || loading || reduced.matches) return;
+    if ((!artVisible && !posterVisible && host!==mini) || loading || reduced.matches) return;
     loading=true;
     try {
 
       const module=await import('./avatar.js');
       renderAvatar=await module.mountAvatar(art);
+      if(inFinale)moveCanvas();
     } catch {
 
       const module=await import('./avatar-sequence.js');
@@ -135,15 +192,15 @@ export function setupStudio() {
     schedule();
   }
   new IntersectionObserver(([entry])=>{artVisible=entry.isIntersecting;loadFigure();schedule();}).observe(art);
-  art.querySelector('canvas').addEventListener('webglcontextlost',()=>art.classList.remove('live'));
-  art.querySelector('canvas').addEventListener('webglcontextrestored',schedule);
+  canvas.addEventListener('webglcontextlost',()=>{art.classList.remove('live');poster.classList.remove('live');mini.classList.remove('live');});
+  canvas.addEventListener('webglcontextrestored',schedule);
   trigger.onclick=()=>{menu.showModal();trigger.setAttribute('aria-expanded','true');};
   menu.querySelector('button').onclick=()=>menu.close();
   menu.addEventListener('close',()=>trigger.setAttribute('aria-expanded','false'));
   menu.querySelector('nav').addEventListener('click',event=>{if(event.target.closest('a')) menu.close();});
   addEventListener('scroll',measure,{passive:true});
   addEventListener('resize',()=>{configure();loadFigure();});
-  reduced.addEventListener('change',()=>{art.classList.remove('live');configure();loadFigure();});
+  reduced.addEventListener('change',()=>{art.classList.remove('live');poster.classList.remove('live');mini.classList.remove('live');configure();loadFigure();});
   document.addEventListener('visibilitychange',()=>{last=0;if(!document.hidden) schedule();});
   configure();
   // Browser may resolve the incoming hash before the desktop anchor is moved.

@@ -79,3 +79,20 @@
 .studio-art figcaption {width:max-content;max-width:100%;margin-inline:auto;padding:4px 9px;border-radius:4px;background:#eeede7;color:#29251f}
 .studio-sequence,.studio-sequence img {position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
 @media(prefers-reduced-motion:reduce){.studio-sequence{visibility:hidden}}
+.studio-art .studio-still {padding:0;filter:none}
+.studio-art figcaption {top:3%;bottom:auto;left:4%;right:auto;margin:0}
+.studio-cinema .studio-stage::before {background:radial-gradient(ellipse at 26% 43%,#8b5552 0%,#502c32 31%,#321c25 63%)}
+.studio-art .studio-orbit {inset:0;border:0;border-radius:0;transform:none;background:radial-gradient(ellipse at 45% 35%,#fff5e517,transparent 64%)}
+@media(max-width:899px) {
+  .studio-art figcaption {position:absolute;inset:auto;width:1px;height:1px;padding:0;overflow:hidden;clip-path:inset(50%)}
+}
+@media(max-width:899px) and (min-height:640px) and (prefers-reduced-motion:no-preference) {
+  .studio-art {height:clamp(208px,32svh,316px)}
+  #mindfind-story .studio-anchor {scroll-margin-top:calc(clamp(208px,32svh,316px) - 70px)}
+}
+/* When a chapter is too tall to pin, keep its figure beside the flowing text. */
+@media(min-width:900px) and (prefers-reduced-motion:no-preference) {
+ #mindfind-story:not(.studio-cinema) .studio-stage {display:grid;grid-template-columns:minmax(0,.94fr) minmax(0,1.06fr)}
+ #mindfind-story:not(.studio-cinema) .studio-art {grid-column:1;grid-row:1/4;position:sticky;top:58px;align-self:start;height:calc(100svh - 72px)}
+ #mindfind-story:not(.studio-cinema) .studio-act {grid-column:2;width:100%;margin:0;align-content:center;min-height:70svh}
+}

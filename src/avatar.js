@@ -1,6 +1,9 @@
 // Bind the studio camera to the collectible’s physical height and foot plane.
 import * as T from './vendor/studio.js';
 
+import { buildPedestal } from './pedestal.js';
+import { createPerformance } from './avatar-performance.js';
+
 export async function mountAvatar(figure) {
   const canvas = figure.querySelector('canvas');
   const renderer = new T.WebGLRenderer({canvas, alpha:true, antialias:true, powerPreference:'low-power'});
@@ -19,18 +22,18 @@ export async function mountAvatar(figure) {
   fill.position.set(3,2,4);
   scene.add(ambient,fill);
   const key = new T.DirectionalLight(0xfff4de,3);
-  key.position.set(-3.3,5.6,4.1);
+  key.position.set(-3.2,5.8,3.4);
   key.castShadow=true;
   key.shadow.mapSize.set(1024,1024);
   Object.assign(key.shadow.camera,{left:-2,right:2,top:3,bottom:-1,near:.1,far:13});
-  key.shadow.intensity=.46;
+  key.shadow.intensity=.56;
   key.shadow.radius=7;
-  key.shadow.normalBias=.009;
+  key.shadow.normalBias=.004;
   key.shadow.bias=-.00035;
   renderer.shadowMap.enabled=true;
   scene.add(key);
   const rim = new T.DirectionalLight(0xd5dcff,1.7);
-  rim.position.set(4,2,-2);
+  rim.position.set(2.1,3.5,-3.2);
   scene.add(rim);
   const {GLTFLoader} = await import('./vendor/glb.js');
   const asset = await new GLTFLoader().loadAsync(figure.dataset.model);
@@ -55,8 +58,17 @@ export async function mountAvatar(figure) {
       rig.dispose();
     }
   });
+  const finishes={'Satin apricot vinyl':.52,'Smoke glass':.18,'Soft black hair':.42,'Cotton twill':.83,'Pewter':.24,'Ribbed jersey':.88,'Indigo black denim':.86};
+  asset.scene.traverse(node=>{
+    const material=node.material;
+    if(material && finishes[material.name]!==undefined){
+      material.roughness=finishes[material.name];
+      if(material.name==='Pewter')material.metalness=.8;
+    }
+  });
   const mixer = new T.AnimationMixer(asset.scene);
   mixer.clipAction(asset.animations.find(clip => clip.name==='Idle')).play();
+  const performanceRig=createPerformance(asset.scene);
   const neck=asset.scene.getObjectByName('Head');
   const elbow=asset.scene.getObjectByName('ElbowL');
   const hand=asset.scene.getObjectByName('HandL');
@@ -69,7 +81,7 @@ export async function mountAvatar(figure) {
   // Light colors interpolate in working (linear) space between the three sets.
   const palette=(light,values)=>values.map(value=>light.color.clone().setHex(value));
   const keys=palette(key,[0xffe6ce,0xffe1d3,0xfff3e7]);
-  const rims=palette(rim,[0xd8e6ff,0xffb78e,0xffc0a1]);
+  const rims=palette(rim,[0xffdfc6,0xffa58b,0xffb99b]);
   const fills=palette(fill,[0xe2eaff,0xf0b6c7,0xffd0ca]);
   const smooth=(a,b,x)=>{const t=Math.min(1,Math.max(0,(x-a)/(b-a)));return t*t*(3-2*t);};
   const poses=controls.map(node=>node.quaternion.clone());
@@ -79,13 +91,16 @@ export async function mountAvatar(figure) {
     mesh.position.y = y;
     mesh.receiveShadow=true;
     scene.add(mesh);
+    return mesh;
   }
-  platform(1.15,.12,-.07,0xc9c3b7,.68);
-  platform(1.13,.018,-.139,0xa52317,.45);
-  platform(1.11,.045,-.166,0x69665e,.7);
+  const environment=await buildPedestal(scene);
+  const seat=platform(.56,1,0,0x504245,.54);
+  seat.position.z=-.31;
+  seat.castShadow=true;
+  seat.visible=false;
   // Soft contact at the feet supplements the figure’s self-shadowing.
   const shadow = new T.Mesh(new T.PlaneGeometry(1.8,.94),new T.MeshBasicMaterial({transparent:true,map:await new T.TextureLoader().loadAsync('assets/studio-shadow.png'),depthWrite:false}));
-  shadow.rotation.x = -Math.PI/2; shadow.position.y = -.006; scene.add(shadow);
+  shadow.rotation.x = -Math.PI/2; shadow.position.y = .001; scene.add(shadow);
   let width=0,height=0,quality=1,slow=0;
   let disposed=false;
   addEventListener('pagehide',event=>{
@@ -104,11 +119,12 @@ export async function mountAvatar(figure) {
       }
     });
     for(const resource of resources)resource.dispose();
+    environment.dispose();
     key.shadow.dispose();
     renderer.dispose();
   });
   let lastProgress=NaN,settledSeconds=0;
-  return (p,dt) => {
+  const draw=(p,dt,settled,finale=false) => {
     if (disposed || renderer.getContext().isContextLost()) return;
     slow=dt>.035?slow+1:Math.max(0,slow-1);
     if (slow>=12 && quality>.65) {quality-=.15;width=0;slow=0;}
@@ -120,9 +136,9 @@ export async function mountAvatar(figure) {
 
     const arc=Math.sin(Math.PI*p);
     const angle=.12; // Fixed three-quarter axis. Scroll only changes framing.
-    const distance=Math.max(5.55,4.0/camera.aspect)+.48*p-.14*arc;
-    camera.position.set(Math.sin(angle)*distance,1.77+.23*arc,Math.cos(angle)*distance);
-    camera.lookAt(0,1.26-.06*p,0);
+    const distance=Math.max(6.62,4.90/camera.aspect)+.14*p-.10*arc;
+    camera.position.set(Math.sin(angle)*distance,1.74+.10*arc,Math.cos(angle)*distance);
+    camera.lookAt(0,1.015-.015*p,0);
 
     mixer.update(dt);
     // Mix absolute local poses without accumulating rotations between frames.
@@ -151,11 +167,19 @@ export async function mountAvatar(figure) {
     key.color.lerpColors(keys[0],keys[1],wine).lerp(keys[2],red);
     rim.color.lerpColors(rims[0],rims[1],wine).lerp(rims[2],red);
     fill.color.lerpColors(fills[0],fills[1],wine).lerp(fills[2],red);
-    key.intensity=2.65+.48*wine-.20*red;
-    rim.intensity=1.9+.7*wine;
-    ambient.intensity=1.26-.24*wine+.14*red;
+    key.intensity=2.98+.28*wine+.22*red;
+    rim.intensity=2.6+1.15*wine-.35*red;
+    ambient.intensity=.70-.18*wine+.12*red;
+    fill.intensity=.69-.16*wine+.11*red;
+    const seated=performanceRig.apply(dt,finale);
+    seat.visible=seated>.01;
+    seat.scale.y=Math.max(.001,.86*seated);
+    seat.position.y=seat.scale.y/2-.01;
     renderer.render(scene,camera);
+    performanceRig.restore();
     controls.forEach((node,i)=>node.quaternion.copy(poses[i]));
-    figure.classList.add('live');
+    canvas.parentElement.classList.add('live');
   };
+  draw.react=performanceRig.react;
+  return draw;
 }

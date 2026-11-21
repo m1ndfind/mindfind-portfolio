@@ -9,6 +9,7 @@
   <link rel="icon" href="assets/favicon.svg">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="studio.css">
+  <link rel="stylesheet" href="finale.css">
   <script type="module" src="main.js"></script>
 </head>
 <body id="top">
@@ -151,22 +152,36 @@
         </figure>
         <article class="studio-act" data-anchor="services"><span id="services" class="studio-anchor"></span><p class="studio-label">03 / Направления</p><h2>Что я делаю?</h2><ul class="studio-services"><li><small>01</small><div><strong>Рекламные лендинги</strong><p>Страница для одной услуги или продукта. Помогаю сформулировать предложение и выстроить путь к обращению.</p></div></li><li><small>02</small><div><strong>Промосайты брендов</strong><p>Цифровые презентации для запуска продукта, кампании или знакомства с брендом.</p></div></li><li><small>03</small><div><strong>Интерактивные веб-проекты</strong><p>Интерактивные истории и демонстрации, в которых посетитель может поучаствовать.</p></div></li><li><small>04</small><div><strong>Редизайн сайтов</strong><p>Обновление структуры, визуальной подачи и мобильной версии существующего сайта.</p></div></li><li><small>05</small><div><strong>Креативная разработка</strong><p>Адаптивная вёрстка, выразительное движение и WebGL для сайтов и портфолио.</p></div></li></ul></article>
         <article class="studio-act" data-anchor="about"><span id="about" class="studio-anchor"></span><p class="studio-label">04 / Об авторе</p><h2>Больше, чем просто код.</h2><p class="studio-prose">Я Mindfind, независимый дизайнер и веб-разработчик. Собираю структуру, графику и движение вокруг одной идеи, чтобы посетитель быстро понял, что вы предлагаете, и запомнил, как вы это показали.</p><p>Сопровождаю проект от первого разговора до запуска.</p><ol class="studio-process"><li>Знакомство</li><li>Объём и сроки</li><li>Структура</li><li>Дизайн</li><li>Разработка</li><li>Запуск</li></ol></article>
-        <article class="studio-act" data-anchor="contact"><span id="contact" class="studio-anchor"></span><p class="studio-label">05 / Контакт</p><h2>Какой сайт вам нужен?</h2><p>Опишите идею и подготовьте бриф для будущего разговора.</p><a class="cta cta-black" href="#brief">Обсудить проект ↘</a></article>
+        <article class="studio-act" data-anchor="contact"><span id="contact" class="studio-anchor"></span><p class="studio-label">05 / Контакт</p><h2>Какой сайт вам нужен?</h2><p>Опишите идею и подготовьте бриф для будущего разговора.</p><a class="cta cta-black" href="#start-project">Обсудить проект ↘</a></article>
         <div class="studio-meter" aria-hidden="true"><i></i></div>
       </div>
     </section>
-    <section class="studio-brief" aria-labelledby="brief-title"><div><p class="studio-label">Mindfind® / Бриф</p><h2 id="brief-title">О проекте<span>.</span></h2><img class="brief-figure" src="assets/studio/30.webp" width="710" height="780" loading="lazy" alt=""></div><form id="brief" aria-describedby="brief-note">
-            <p id="brief-note">Заполните три поля и скопируйте бриф для будущего разговора. Данные останутся в вашем браузере. Отправка автору пока недоступна.</p>
-            <label>Ваше имя<input name="name" autocomplete="name" maxlength="100" required></label>
-            <label>Где вам ответить<input name="contact" placeholder="Telegram или email" maxlength="200" required></label>
-            <label>Что нужно сделать<textarea name="task" rows="3" maxlength="3000" placeholder="Какой сайт, для кого и к какому сроку" required></textarea></label>
-            <button class="cta cta-black" id="copy-brief" type="submit" disabled>Скопировать заявку <svg aria-hidden="true"><use href="#arrow"/></svg></button>
+    <section id="start-project" class="studio-brief" aria-labelledby="brief-title">
+      <div class="brief-spread">
+        <header class="brief-heading"><p class="studio-label">Mindfind® / Бриф</p>
+          <h2 id="brief-title"><span>Давай</span> <em>начнём<span>.</span></em></h2>
+        </header>
+        <figure class="brief-poster" aria-label="Фигурка Mindfind на студийном пьедестале">
+          <b aria-hidden="true" class="poster-initials">MF</b><span aria-hidden="true" class="poster-spine">MINDFIND®</span>
+          <img class="poster-still" src="assets/studio/finale.webp" width="650" height="650" alt="" loading="lazy">
+        </figure>
+        <p id="brief-note">Заполните три поля и скопируйте бриф для будущего разговора. Данные останутся в вашем браузере. Отправка автору пока недоступна.</p>
+      </div>
+      <form id="brief" aria-describedby="brief-note">
+        <h3>О проекте<span>.</span><span class="brief-mini" aria-hidden="true"><img src="assets/studio/finale.webp" width="650" height="650" loading="lazy" alt=""></span></h3>
+        <div class="brief-field"><label for="brief-name"><small aria-hidden="true">01</small>Ваше имя</label>
+          <input id="brief-name" name="name" autocomplete="name" maxlength="100" placeholder="Как к вам обращаться?" required aria-describedby="name-error"><span class="field-rule" aria-hidden="true"></span><span id="name-error" class="field-error"></span></div>
+        <div class="brief-field"><label for="brief-contact"><small aria-hidden="true">02</small>Где вам ответить</label>
+          <input id="brief-contact" name="contact" placeholder="Telegram или email" maxlength="200" required aria-describedby="contact-error"><span class="field-rule" aria-hidden="true"></span><span id="contact-error" class="field-error"></span></div>
+        <div class="brief-field"><label for="brief-task"><small aria-hidden="true">03</small>Что нужно сделать</label>
+          <textarea id="brief-task" name="task" rows="3" maxlength="3000" placeholder="Какой сайт, для кого и к какому сроку" required aria-describedby="task-error"></textarea><span class="field-rule" aria-hidden="true"></span><span id="task-error" class="field-error"></span></div>
+        <button id="copy-brief" type="submit" disabled><span>Скопировать заявку</span><b aria-hidden="true">↗</b></button>
             <noscript><p>Для копирования заявки включите JavaScript.</p></noscript>
             <p id="status" role="status"></p>
           </form></section>
   </main>
   <footer class="dark"><div class="shell footer-layout">
-    <a class="wordmark" href="#top">MINDFIND<sup>®</sup></a><span class="mono">© 2026 Mindfind</span><a href="#brief">Подготовить бриф</a><a href="#top">Наверх ↑</a>
+    <a class="wordmark" href="#top">MINDFIND<sup>®</sup></a><span class="mono">© 2026 Mindfind</span><a href="#start-project">Подготовить бриф</a><a href="#top">Наверх ↑</a>
   </div></footer>
   <dialog id="project-dialog" aria-labelledby="dialog-title">
     <div class="dialog-head"><div><h2 id="dialog-title" aria-live="polite"></h2><p>Учебный концепт · интерактивное демо</p></div>
